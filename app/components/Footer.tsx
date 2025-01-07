@@ -1,4 +1,14 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
 export default function Footer() {
+  const [year, setYear] = useState('');
+
+  useEffect(() => {
+    setYear(new Date().getFullYear().toString());
+  }, []);
+
   return (
     <footer className="bg-primary text-white">
       <div className="container mx-auto px-4 py-12">
@@ -46,7 +56,7 @@ export default function Footer() {
         <div className="border-t border-white/20 mt-12 pt-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="text-sm">
-              <p>&copy; {new Date().getFullYear()} Gouvernement du Burkina Faso. Tous droits réservés.</p>
+              <p>&copy; {year || '2024'} Gouvernement du Burkina Faso. Tous droits réservés.</p>
             </div>
             <div className="text-sm md:text-right space-x-4">
               <a href="/mentions-legales" className="hover:text-gray-300 transition-colors">Mentions légales</a>

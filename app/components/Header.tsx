@@ -2,14 +2,19 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MainMenu from './MainMenu';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <header>
+    <header suppressHydrationWarning>
       {/* Official banner */}
       <div className="bg-primary text-white px-4 py-2">
         <div className="container mx-auto flex justify-between items-center">
@@ -71,7 +76,7 @@ export default function Header() {
           </div>
 
           {/* Mobile Navigation */}
-          {isMenuOpen && (
+          {mounted && isMenuOpen && (
             <nav className="lg:hidden pb-4 border-t border-gray-200">
               <div className="flex flex-col space-y-2 pt-4">
                 <Link 

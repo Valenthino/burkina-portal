@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface MenuLink {
   title: string;
@@ -584,19 +584,30 @@ function MenuLink({ link }: { link: MenuItem }) {
 }
 
 export default function MainMenu() {
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const handleMenuEnter = (key: string) => {
-    setOpenMenu(key);
+    if (mounted) {
+      setActiveMenu(key);
+    }
   };
 
   const handleMenuLeave = () => {
-    setOpenMenu(null);
+    if (mounted) {
+      setActiveMenu(null);
+    }
   };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    if (mounted) {
+      setIsMobileMenuOpen(!isMobileMenuOpen);
+    }
   };
 
   // Filter out Agriculture, Justice, and Santé from the main menu
@@ -605,7 +616,7 @@ export default function MainMenu() {
   );
 
   return (
-    <nav className="bg-background border-b border-gray-200" aria-label="Menu principal">
+    <nav className="border-t border-gray-200 bg-background" suppressHydrationWarning>
       <div className="container mx-auto">
         {/* Desktop Menu */}
         <div className="hidden lg:block">
@@ -621,7 +632,7 @@ export default function MainMenu() {
                 <Link
                   href={`/${key === 'citoyens' ? 'services/citoyens' : key}`}
                   className={`px-6 py-3 text-foreground-dark hover:bg-gray-50 flex items-center gap-1 w-full transition-colors ${
-                    openMenu === key ? 'bg-gray-50' : ''
+                    activeMenu === key ? 'bg-gray-50' : ''
                   }`}
                   role="menuitem"
                 >
@@ -629,7 +640,7 @@ export default function MainMenu() {
                   <span className="ml-1" aria-hidden="true">▾</span>
                 </Link>
 
-                {openMenu === key && (
+                {activeMenu === key && (
                   <div 
                     className="absolute left-1/2 transform -translate-x-1/2 top-full w-screen max-w-7xl bg-background shadow-lg border-t border-gray-200 py-2 z-50"
                     role="menu"
@@ -773,18 +784,18 @@ export default function MainMenu() {
                 <div key={key} className="border-b border-gray-200">
                   <button
                     className="w-full px-4 py-3 flex justify-between items-center text-foreground-dark hover:bg-gray-50"
-                    onClick={() => setOpenMenu(openMenu === key ? null : key)}
+                    onClick={() => setActiveMenu(activeMenu === key ? null : key)}
                   >
                     {item.title}
                     <span 
-                      className={`transform transition-transform ${openMenu === key ? 'rotate-180' : ''}`}
+                      className={`transform transition-transform ${activeMenu === key ? 'rotate-180' : ''}`}
                       aria-hidden="true"
                     >
                       ▾
                     </span>
                   </button>
 
-                  {openMenu === key && (
+                  {activeMenu === key && (
                     <div className="bg-background-light px-4 py-3">
                       {item.sections.map((section, idx) => (
                         <div key={idx} className="mb-4 last:mb-0">
