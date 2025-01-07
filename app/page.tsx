@@ -1,101 +1,183 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import Link from 'next/link';
+import Image from 'next/image';
+
+const mostRequestedServices = [
+  {
+    title: "CNIB en ligne",
+    description: "Demande et renouvellement de la carte d'identité",
+    url: "/services/citoyens/cnib",
+    category: "Documents"
+  },
+  {
+    title: "Passeport",
+    description: "Demande et renouvellement de passeport",
+    url: "/services/citoyens/passeport",
+    category: "Documents"
+  },
+  {
+    title: "État civil",
+    description: "Actes de naissance, mariage et décès",
+    url: "/services/citoyens/etat-civil",
+    category: "Documents"
+  },
+  {
+    title: "Concours de la fonction publique",
+    description: "Calendrier et inscription aux concours",
+    url: "/emploi/concours",
+    category: "Emploi"
+  },
+  {
+    title: "Marchés publics",
+    description: "Appels d'offres et opportunités",
+    url: "/entreprises/marches-publics",
+    category: "Entreprises"
+  },
+  {
+    title: "Création d'entreprise",
+    description: "Démarches et formalités",
+    url: "/entreprises/creation",
+    category: "Entreprises"
+  }
+];
+
+const quickAccessLinks = [
+  { 
+    title: 'Emploi', 
+    href: '/emploi',
+    description: 'Offres d\'emploi et concours'
+  },
+  { 
+    title: 'Entreprises', 
+    href: '/entreprises',
+    description: 'Services aux entreprises'
+  },
+  { 
+    title: 'Éducation', 
+    href: '/services/citoyens/education',
+    description: 'Formation et enseignement'
+  },
+  { 
+    title: 'Santé', 
+    href: '/services/citoyens/sante',
+    description: 'Services de santé'
+  },
+  { 
+    title: 'Tourisme', 
+    href: '/burkina/tourisme',
+    description: 'Découvrir le Burkina Faso'
+  },
+  { 
+    title: 'Contact', 
+    href: '/contact',
+    description: 'Nous contacter'
+  }
+];
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="bg-primary text-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              Bienvenue sur le portail du Gouvernement du Burkina Faso
+            </h1>
+            <p className="text-xl mb-8 text-gray-100">
+              Accédez aux services gouvernementaux, informations et ressources en ligne
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link 
+                href="/services/citoyens" 
+                className="btn-secondary"
+              >
+                Services aux citoyens
+              </Link>
+              <Link 
+                href="/services" 
+                className="btn-outline-light"
+              >
+                Tous les services
+              </Link>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      {/* Tags Section */}
+      <section className="py-8 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href="/citoyens" className="tag">
+              Citoyens
+            </Link>
+            <Link href="/entreprises" className="tag">
+              Entreprises
+            </Link>
+            <Link href="/administration" className="tag">
+              Administration
+            </Link>
+            <Link href="/international" className="tag">
+              International
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Most Requested Services */}
+      <section className="py-16 bg-background-light">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-foreground-dark text-center mb-12">
+            Services les plus demandés
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {mostRequestedServices.map((service, index) => (
+              <Link key={index} href={service.url} className="group">
+                <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow h-full">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-xl font-semibold text-foreground-dark group-hover:text-primary">
+                      {service.title}
+                    </h3>
+                    <span className="text-sm text-primary bg-primary/10 px-2 py-1 rounded">
+                      {service.category}
+                    </span>
+                  </div>
+                  <p className="text-foreground-light">
+                    {service.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Access */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-foreground-dark text-center mb-12">
+            Accès rapide
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quickAccessLinks.map((item, index) => (
+              <Link
+                key={index}
+                href={item.href}
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow group"
+              >
+                <h3 className="text-xl font-semibold text-foreground-dark group-hover:text-primary mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-foreground-light">
+                  {item.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

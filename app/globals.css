@@ -2,20 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --primary: #153B3C;
+    --secondary: #EDEFF3;
+    --background: #FFFFFF;
+    --background-light: #F8F9FA;
+    --foreground-dark: #1A202C;
+    --foreground-light: #4A5568;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --primary: #1D4E4F;
+      --secondary: #2D3748;
+      --background: #0A0A0A;
+      --background-light: #171717;
+      --foreground-dark: #EDEDED;
+      --foreground-light: #A0AEC0;
+    }
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors font-semibold;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-primary px-6 py-3 rounded-lg hover:bg-secondary/90 transition-colors font-semibold;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary text-primary px-6 py-3 rounded-lg hover:bg-primary hover:text-white transition-colors font-semibold;
+  }
+
+  .btn-outline-light {
+    @apply border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-primary transition-colors font-semibold;
+  }
+
+  .nav-link {
+    @apply text-foreground-dark hover:text-primary transition-colors;
+  }
 }
