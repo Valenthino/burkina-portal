@@ -104,7 +104,7 @@ const megaMenu: { [key: string]: MegaMenuItem } = {
       {
         title: "Fiscalité",
         links: [
-          { title: "Impôts", url: "/entreprises/fiscalite/impots", description: "Obligations fiscales des entreprises" },
+          { title: "Impôts", url: "https://esintax.bf/", description: "Obligations fiscales des entreprises" },
           { title: "TVA", url: "/entreprises/fiscalite/tva", description: "Gestion de la TVA" },
           { title: "Déclarations", url: "/entreprises/fiscalite/declarations", description: "Calendrier des déclarations" },
           { title: "Exonérations", url: "/entreprises/fiscalite/exonerations", description: "Avantages fiscaux disponibles" }
@@ -610,7 +610,6 @@ export default function MainMenu() {
     }
   };
 
-  // Filter out Agriculture, Justice, and Santé from the main menu
   const mainMenuItems = Object.entries(megaMenu).filter(
     ([key]) => !['agriculture', 'justice', 'sante'].includes(key)
   );
@@ -618,7 +617,6 @@ export default function MainMenu() {
   return (
     <nav className="border-t border-gray-200 bg-background" suppressHydrationWarning>
       <div className="container mx-auto">
-        {/* Desktop Menu */}
         <div className="hidden lg:block">
           <ul className="flex justify-center" role="menubar">
             {mainMenuItems.map(([key, item]) => (
@@ -647,9 +645,7 @@ export default function MainMenu() {
                   >
                     <div className="container mx-auto px-2">
                       <div className="grid grid-cols-2 gap-x-2 gap-y-2 justify-center max-w-4xl mx-auto">
-                        {/* First Column */}
                         <div className="space-y-2">
-                          {/* First Row, First Column */}
                           <div className="min-w-[200px]">
                             <h3 className="font-semibold text-foreground-dark mb-1 text-lg border-b pb-1">
                               {item.sections[0].title}
@@ -672,7 +668,6 @@ export default function MainMenu() {
                               ))}
                             </ul>
                           </div>
-                          {/* Second Row, First Column */}
                           {item.sections[2] && (
                             <div className="min-w-[200px]">
                               <h3 className="font-semibold text-foreground-dark mb-1 text-lg border-b pb-1">
@@ -699,9 +694,7 @@ export default function MainMenu() {
                           )}
                         </div>
 
-                        {/* Second Column */}
                         <div className="space-y-2">
-                          {/* First Row, Second Column */}
                           {item.sections[1] && (
                             <div className="min-w-[200px]">
                               <h3 className="font-semibold text-foreground-dark mb-1 text-lg border-b pb-1">
@@ -726,7 +719,6 @@ export default function MainMenu() {
                               </ul>
                             </div>
                           )}
-                          {/* Second Row, Second Column */}
                           {item.sections[3] && (
                             <div className="min-w-[200px]">
                               <h3 className="font-semibold text-foreground-dark mb-1 text-lg border-b pb-1">
@@ -761,7 +753,6 @@ export default function MainMenu() {
           </ul>
         </div>
 
-        {/* Mobile Menu */}
         <div className="lg:hidden">
           <button
             onClick={toggleMobileMenu}

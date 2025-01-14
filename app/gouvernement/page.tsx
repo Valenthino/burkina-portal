@@ -10,9 +10,9 @@ const governmentMembers = [
     description: 'Chef de l\'État et Président de la Transition'
   },
   {
-    name: 'Apollinaire Joachim Kyélem de Tambèla',
+    name: 'Rimtalba Jean Emmanuel Ouédraogo',
     role: 'Premier Ministre',
-    image: '/members/pm.jpg',
+    image: '/members/Premier Ministre.jpg',
     description: 'Chef du gouvernement'
   },
   // Add more members as needed
@@ -21,19 +21,89 @@ const governmentMembers = [
 const ministries = [
   {
     name: 'Ministère de la Défense',
-    minister: 'Kassoum Coulibaly',
+    minister: 'Général de Brigade Célestin SIMPORE',
     responsibilities: ['Sécurité nationale', 'Forces armées', 'Défense du territoire']
   },
+
   {
-    name: 'Ministère des Affaires Étrangères',
-    minister: 'Olivia Rouamba',
-    responsibilities: ['Relations internationales', 'Diplomatie', 'Coopération']
+    name: 'Ministre d\'État, Ministre de l\'Administration territoriale et de la Mobilité',
+    minister: 'Monsieur Emile ZERBO',
+    responsibilities: ['Administration territoriale', 'Mobilité', 'Gestion territoriale']
   },
   {
-    name: 'Ministère de l\'Économie',
+    name: 'Ministre d\'État, Ministre de l\'Agriculture, des Ressources animales et halieutiques',
+    minister: 'Commandant Ismaël SOMBIE',
+    responsibilities: ['Agriculture', 'Élevage', 'Ressources halieutiques']
+  },
+
+  {
+    name: 'Ministère de l\'Économie et des Finances',
     minister: 'Aboubakar Nacanabo',
     responsibilities: ['Finances publiques', 'Développement économique', 'Budget']
   },
+  {
+    name: ' Ministre de la Sécurité',
+    minister: 'Commissaire divisionnaire de Police Mahamadou SANA',
+    responsibilities: ['Sécurité intérieure', 'Police', 'Gestion des affaires juridiques policières']
+  },
+
+  {
+    name: 'Ministre des Affaires étrangères, de la Coopération régionale et des Burkinabè de l\'extérieur',
+    minister: 'Karamoko Jean Marie TRAORE',
+    responsibilities: ['Relations internationales', 'Diplomatie', 'Coopération']
+  },
+
+  {
+    name: 'Ministre de la Fonction publique, du Travail et de la Protection sociale',
+    minister: 'Monsieur Mathias TRAORE',
+    responsibilities: ['Fonction publique', 'Travail', 'Protection sociale']
+  },
+  {
+    name: 'Ministre de la Communication, de la Culture, des Arts et du Tourisme, Porte-Parole du Gouvernement',
+    minister: 'Monsieur Pingdwendé Gilbert OUEDRAOGO',
+    responsibilities: ['Communication', 'Culture', 'Arts', 'Tourisme', 'Porte-parole']
+  },
+  {
+    name: 'Ministre de l\'Action humanitaire et de la Solidarité nationale',
+    minister: 'Commandant Passowendé Pélagie KABRE/KABORE',
+    responsibilities: ['Action humanitaire', 'Solidarité nationale', 'PDI']
+  },
+  {
+    name: 'Ministre de la Justice et des Droits humains, chargé des Relations avec les Institutions, Garde des Sceaux',
+    minister: 'Monsieur Edasso Rodrigue BAYALA',
+    responsibilities: ['Justice', 'Droits humains', 'Relations avec les Institutions']
+  },
+  {
+    name: 'Ministre de la Santé',
+    minister: 'Monsieur Robert Lucien Jean-Claude KARGOUGOU',
+    responsibilities: ['Santé publique', 'Prévention des maladies', 'Gestion des hôpitaux']
+  },
+  {
+    name: 'Ministre de la Transition digitale, des Postes et des Communications électroniques',
+    minister: 'Madame Aminata ZERBO/SABANE',
+    responsibilities: ['Transition digitale', 'Postes', 'Communications électroniques']
+  },
+  {
+    name: 'Ministre de l\'Industrie, du Commerce et de l\'Artisanat',
+    minister: 'Monsieur Serge Gnaniodem PODA',
+    responsibilities: ['Industrie', 'Commerce', 'Artisanat']
+  },
+  {
+    name: 'Ministre des Infrastructures et du Désenclavement',
+    minister: 'Monsieur Adama Luc SORGHO',
+    responsibilities: ['Infrastructures', 'Désenclavement', 'Développement des transports']
+  },  
+  {
+    name: 'Ministre de l\'Énergie, des Mines et des Carrières',
+    minister: 'Monsieur Yacouba Zabré GOUBA',
+    responsibilities: ['Énergie', 'Mines', 'Carrières']
+  },
+  {
+    name: 'Ministre de l\'Enseignement de base, de l\'Alphabétisation et de la Promotion des Langues nationales',
+    minister: 'Monsieur Jacques Sosthène DINGARA',
+    responsibilities: ['Enseignement de base', 'Alphabétisation', 'Promotion des Langues nationales']
+  },
+
   // Add more ministries
 ];
 
