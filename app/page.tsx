@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import { /* Remove Image if unused */ } from 'next/image';
 
 const mostRequestedServices = [
   {
