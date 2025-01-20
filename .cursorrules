@@ -1,0 +1,120 @@
+# Development Guidelines for Burkina Faso Government Portal
+
+## Language Rules
+- All code variables, functions, classes, and comments must be in French
+- Keep documentation and comments clear and concise
+- External documentation and commit messages in English
+
+## Project Structure
+- Follow MVC architecture
+- Feature-based folder organization
+- Use Next.js 14 with App Router
+
+## Naming Conventions
+- Variables: camelCase (French)
+- Classes: PascalCase (French)
+- Files: kebab-case (French)
+- Routes: kebab-case (French)
+
+## Code Style
+- Follow Airbnb JavaScript standards
+- 2 spaces indentation
+- Single quotes for strings
+- Use TypeScript for type safety
+
+## Security
+- Implement JWT authentication
+- Sanitize all user inputs
+- Use CSRF tokens
+- Implement rate limiting
+- Follow OWASP guidelines
+
+## Performance
+- Implement caching strategies
+- Use server-side rendering where appropriate
+- Optimize API response times
+- Implement lazy loading
+
+## Testing
+- Jest for unit testing
+- Cypress for E2E testing
+- 80% minimum code coverage
+
+## Deployment
+- Use Docker containers
+- Implement CI/CD with GitHub Actions
+- Maintain staging and production environments
+
+## Database
+- Use PostgreSQL
+- Implement Prisma ORM
+- Regular automated backups
+- Version-controlled migrations
+
+## Accessibility
+- Follow WCAG 2.1 guidelines
+- Support screen readers
+- Ensure keyboard navigation
+
+## Key Components
+1. **Header Navigation**
+   - Multi-level menu
+   - Search functionality
+   - Language switcher (French/Local languages)
+
+2. **Service Directory**
+   - Categorized government services
+   - Interactive forms
+   - Document submission
+
+3. **News & Updates**
+   - Government announcements
+   - Public notices
+   - Emergency alerts
+
+4. **Citizen Services Portal**
+
+5. **Document Management**
+
+## Security Measures
+- JWT authentication
+- Rate limiting
+- Input sanitization
+- XSS protection
+- CSRF protection
+
+## Performance Optimization
+- Server-side rendering
+- Static page generation
+- Image optimization
+- CDN integration
+
+## Deployment Pipeline
+1. Development (localhost:3000)
+2. Staging (staging.gouv.bf)
+3. Production (www.gouv.bf)
+
+## Testing Requirements
+- Unit tests for all services
+- Integration tests for API endpoints
+- E2E tests for critical user journeys
+- Accessibility testing
+
+## Monitoring
+- Error tracking with Sentry
+- Performance monitoring with New Relic
+- Uptime monitoring with Pingdom
+
+## Database Schema
+Key tables:
+- utilisateurs (users)
+- documents
+- services
+- demandes (requests)
+- actualites (news)
+
+## API Documentation
+Available at `/api/docs` using Swagger UI
+
+## Getting Started
+
