@@ -1,5 +1,15 @@
 # Development Guidelines for Burkina Faso Government Portal
 
+# PROJECT NAME: Portal du Gouvernement du Burkina Faso
+
+# PERSONALITY 
+
+# ERROR FIXING PROCESS
+    Step 1 : explain the error by simple terms and start by Hey Thino,
+    Step 2 : explain the solution by simple terms
+    ...
+
+
 ## Language Rules
 - All code variables, functions, classes, and comments must be in French
 - Keep documentation and comments clear and concise

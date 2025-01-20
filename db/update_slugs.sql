@@ -1,0 +1,16 @@
+UPDATE ministeres SET slug = 'defense' WHERE id = 1;
+UPDATE ministeres SET slug = 'administration-territoriale' WHERE id = 2;
+UPDATE ministeres SET slug = 'agriculture' WHERE id = 3;
+UPDATE ministeres SET slug = 'economie-finances' WHERE id = 4;
+UPDATE ministeres SET slug = 'securite' WHERE id = 5;
+UPDATE ministeres SET slug = 'affaires-etrangeres' WHERE id = 6;
+UPDATE ministeres SET slug = 'fonction-publique' WHERE id = 7;
+UPDATE ministeres SET slug = 'communication' WHERE id = 8;
+UPDATE ministeres SET slug = 'action-humanitaire' WHERE id = 9;
+UPDATE ministeres SET slug = 'justice' WHERE id = 10;
+UPDATE ministeres SET slug = 'sante' WHERE id = 11;
+UPDATE ministeres SET slug = 'transition-digitale' WHERE id = 12;
+UPDATE ministeres SET slug = 'industrie' WHERE id = 13;
+UPDATE ministeres SET slug = 'infrastructures' WHERE id = 14;
+UPDATE ministeres SET slug = 'energie' WHERE id = 15;
+UPDATE ministeres SET slug = 'enseignement-base' WHERE id = 16; 

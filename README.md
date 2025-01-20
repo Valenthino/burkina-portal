@@ -26,3 +26,18 @@ Le portail utilise une architecture en microservices, facilitant la scalabilité
 - **Services Citoyens**: Accès aux différents services offerts aux citoyens.
 - **Informations Gouvernementales**: Documents officiels, lois et règlements.
 - **Contact et Support**: Formulaires de contact et support en ligne.
+
+# Burkina Faso Government Portal - Technical Documentation
+
+## Overview
+Modern, accessible government portal built with Next.js 14, focusing on performance and user experience. Inspired by Canada.ca and Gov.pl while maintaining unique African identity.
+
+## Tech Stack
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Backend**: Node.js, Express
+- **Database**: PostgreSQL, Prisma
+- **Testing**: Jest, Cypress
+- **Infrastructure**: Docker, Kubernetes
+
+## Core Features
+1. **Authentication System**

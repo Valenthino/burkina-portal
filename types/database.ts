@@ -7,17 +7,23 @@ export interface Ministry {
   slug: string;
   created_at: Date;
   updated_at: Date;
+  services?: Service[];
+  missions?: Mission[];
 }
 
 export interface Service {
   id: number;
-  title: string;
-  description: string | null;
-  ministry_id: number | null;
-  category: string | null;
-  url: string | null;
-  created_at: Date;
-  updated_at: Date;
+  nom: string;
+  type: string;
+  route_type: string;
+  slug: string;
+  category: string;
+  parent_slug: string;
+}
+
+export interface Mission {
+  id: number;
+  description: string;
 }
 
 export interface User {
