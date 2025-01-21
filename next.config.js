@@ -6,6 +6,14 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true, // This will ignore TypeScript errors during build
+  },
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        '@': '.',
+        '@/components': ['./components', './app/components']
+      }
+    }
   }
 }
 

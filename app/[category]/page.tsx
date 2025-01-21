@@ -1,6 +1,6 @@
 import { getServicesByCategory } from '@/lib/db'
 import { notFound } from 'next/navigation'
-import ServiceLink from '@/components/ServiceLink'
+import ServiceLink from '../components/ServiceLink'
 import Link from 'next/link'
 
 // Validate category parameter

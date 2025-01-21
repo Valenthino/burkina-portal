@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import MainMenu from './MainMenu';
+import SearchBar from './SearchBar';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,8 +54,11 @@ export default function Header() {
               </div>
             </Link>
 
-            {/* Navigation desktop - visible uniquement sur grands écrans */}
+            {/* Navigation desktop avec barre de recherche - visible uniquement sur grands écrans */}
             <nav className="hidden lg:flex items-center space-x-8">
+              <div className="w-64">
+                <SearchBar />
+              </div>
               <Link href="/actualites" className="nav-link">Actualités</Link>
               <Link 
                 href="/services/index-a-z" 
@@ -86,6 +90,9 @@ export default function Header() {
           {mounted && isMenuOpen && (
             <nav className="lg:hidden pb-4 border-t border-gray-200">
               <div className="flex flex-col space-y-2 pt-4">
+                <div className="px-2 pb-4">
+                  <SearchBar />
+                </div>
                 {/* Liens du menu mobile */}
                 <Link 
                   href="/actualites" 
@@ -110,21 +117,6 @@ export default function Header() {
 
       {/* Composant du menu principal de navigation */}
       <MainMenu />
-
-      {/* Section de la barre de recherche */}
-      <div className="border-t border-gray-200 bg-background-light">
-        <div className="container mx-auto px-4 py-3">
-          <div className="relative max-w-2xl mx-auto">
-            {/* Champ de recherche avec style et étiquette d'accessibilité */}
-            <input
-              type="search"
-              placeholder="Rechercher des services, informations..."
-              className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-              aria-label="Rechercher sur le site"
-            />
-          </div>
-        </div>
-      </div>
     </header>
   );
 } 
