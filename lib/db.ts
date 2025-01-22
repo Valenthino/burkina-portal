@@ -247,7 +247,6 @@ export async function getServiceBySlug(category: string, parentSlug: string | nu
         s.parent_slug,
         s.route_type,
         s.external_url,
-        s.canonical_url,
         s.slug,
         m.nom as "ministereName",
         m.slug as "ministereSlug"
@@ -264,10 +263,18 @@ export async function getServiceBySlug(category: string, parentSlug: string | nu
       return null
     }
 
-    return serviceResult.rows[0]
+    // If the service exists but has invalid data, return null to trigger 404
+    const service = serviceResult.rows[0]
+    if (!service.nom || !service.slug) {
+      console.error('Service exists but has invalid data:', service)
+      return null
+    }
+
+    return service
   } catch (error) {
     console.error('Erreur lors de la récupération du service:', error)
-    throw new Error('Impossible de récupérer le service')
+    // Return null instead of throwing to trigger 404
+    return null
   }
 }
 

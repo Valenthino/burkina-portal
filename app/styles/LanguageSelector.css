@@ -1,0 +1,100 @@
+/* Custom Language Selector Styles */
+.language-selector {
+  display: flex;
+  align-items: center;
+}
+
+/* Style overrides for Google Translate Widget */
+#google_translate_element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.goog-te-gadget {
+  font-family: inherit !important;
+  color: white !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+.goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value {
+  color: white !important;
+  text-decoration: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.goog-te-gadget-simple .goog-te-menu-value:hover {
+  text-decoration: underline !important;
+  opacity: 0.8;
+}
+
+/* Hide Google Translate banner */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+/* Fix for Google Translate shifting the page */
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* Hide all Google Translate elements except the combo box */
+.goog-te-gadget * {
+  display: none !important;
+}
+
+.goog-te-combo {
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+}
+
+/* Remove Google Translate top bar */
+.skiptranslate iframe {
+  display: none !important;
+}
+
+/* Ensure translated text is visible */
+.translated-ltr,
+.translated-rtl {
+  position: static !important;
+}
+
+/* Custom dropdown styling for Google Translate */
+.goog-te-menu2 {
+  border-radius: 4px !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.goog-te-menu2-item div {
+  padding: 6px 12px !important;
+  color: #4a5568 !important;
+}
+
+.goog-te-menu2-item:hover div {
+  background-color: #f7fafc !important;
+} 

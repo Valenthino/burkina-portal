@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import MainMenu from './MainMenu';
 import SearchBar from './SearchBar';
+import LanguageSelector from './LanguageSelector';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,11 +24,8 @@ export default function Header() {
           <div className="text-sm">
             Site officiel du gouvernement du Burkina Faso
           </div>
-          {/* Boutons de sélection de langue */}
-          <div className="flex space-x-4">
-            <button className="text-sm hover:text-gray-300 transition-colors">Français</button>
-            <button className="text-sm hover:text-gray-300 transition-colors">English</button>
-          </div>
+          {/* Sélecteur de langue Google Translate */}
+          <LanguageSelector />
         </div>
       </div>
 

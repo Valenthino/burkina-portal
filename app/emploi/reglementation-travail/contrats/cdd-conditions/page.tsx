@@ -7,73 +7,125 @@ const breadcrumbItems = [
   { label: 'Accueil', href: '/' },
   { label: 'Emploi - Travail', href: '/emploi' },
   { label: 'Contrats de travail', href: '/emploi/reglementation-travail/contrats' },
-  { label: 'Conditions d\'embauche en CDD', href: '/emploi/reglementation-travail/contrats/cdd-conditions' }
+  { label: 'Conditions CDD', href: '/emploi/reglementation-travail/contrats/cdd-conditions' }
 ];
 
-export default function CddConditionsPage() {
+export default function CDDConditionsPage() {
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
         <Breadcrumb items={breadcrumbItems} />
         
-        <h1 className="text-3xl font-bold mb-6 border-b pb-2">
-          Un employeur peut-il embaucher en contrat à durée déterminée (CDD) ?
+        <h1 className="text-4xl font-bold mb-8 border-b pb-2">
+          Conditions d'Embauche en CDD au Burkina Faso
         </h1>
-        
+
         <div className="prose max-w-none mb-12">
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Principe général</h2>
-            <p className="mb-4">
-              Le contrat à durée déterminée (CDD) est un contrat d'exception. 
-              Il ne peut être conclu que pour l'exécution d'une tâche précise et temporaire, 
-              et uniquement dans les cas prévus par la loi.
-            </p>
-            <p className="mb-4">
-              Le CDD ne peut avoir ni pour objet ni pour effet de pourvoir durablement 
-              un emploi lié à l'activité normale et permanente de l'entreprise.
-            </p>
+            <h2 className="text-2xl font-semibold mb-4">Cas de Recours au CDD</h2>
+            <div className="space-y-4">
+              <p>
+                Le contrat à durée déterminée ne peut être conclu que pour l'exécution d'une tâche précise et temporaire, 
+                et seulement dans les cas suivants :
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Remplacement d'un salarié absent ou dont le contrat est suspendu</li>
+                <li>Accroissement temporaire de l'activité de l'entreprise</li>
+                <li>Emplois à caractère saisonnier</li>
+                <li>Travaux urgents nécessaires à la sécurité</li>
+                <li>Commandes exceptionnelles à l'exportation</li>
+                <li>Début d'activité dans l'entreprise</li>
+              </ul>
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Cas de recours autorisés</h2>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Remplacement d'un salarié absent ou temporairement à temps partiel</li>
-              <li>Accroissement temporaire de l'activité de l'entreprise</li>
-              <li>Emplois saisonniers</li>
-              <li>Emplois pour lesquels il est d'usage constant de ne pas recourir au CDI</li>
-              <li>Remplacement d'un chef d'entreprise</li>
-              <li>Exécution d'un chantier ou d'une opération définie</li>
-            </ul>
+            <h2 className="text-2xl font-semibold mb-4">Forme et Contenu du CDD</h2>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold mb-3">Mentions obligatoires</h3>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Motif précis du recours au CDD</li>
+                <li>Nom et qualification du salarié remplacé (si remplacement)</li>
+                <li>Date de début et de fin du contrat</li>
+                <li>Poste occupé et qualification requise</li>
+                <li>Durée de la période d'essai</li>
+                <li>Montant de la rémunération</li>
+                <li>Convention collective applicable</li>
+                <li>Caisse de sécurité sociale</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold mb-3">Formalités</h3>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Contrat écrit obligatoire</li>
+                <li>Transmission au salarié dans les 48h</li>
+                <li>Signature des deux parties</li>
+                <li>Déclaration à l'inspection du travail</li>
+              </ul>
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Conditions de forme</h2>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Le CDD doit obligatoirement être écrit</li>
-              <li>Il doit préciser le motif de recours</li>
-              <li>Il doit comporter une date de fin ou une durée minimale</li>
-              <li>Il doit être signé dans les 2 jours suivant l'embauche</li>
-              <li>Il doit mentionner la convention collective applicable</li>
-            </ul>
+            <h2 className="text-2xl font-semibold mb-4">Durée et Renouvellement</h2>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold mb-3">Durée initiale</h3>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Maximum 2 ans, tous renouvellements compris</li>
+                <li>Minimum 6 mois (sauf cas particuliers)</li>
+                <li>Terme précis obligatoire (sauf remplacement)</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold mb-3">Conditions de renouvellement</h3>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Renouvellement possible une fois</li>
+                <li>Accord écrit des parties</li>
+                <li>Respect de la durée maximale</li>
+                <li>Maintien du motif initial</li>
+              </ul>
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Durée et renouvellement</h2>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Durée maximale : 2 ans, renouvellement compris</li>
-              <li>Un seul renouvellement possible</li>
-              <li>Le renouvellement doit être prévu dans le contrat initial ou faire l'objet d'un avenant</li>
-              <li>Délai de carence obligatoire entre deux CDD sur le même poste</li>
-            </ul>
+            <h2 className="text-2xl font-semibold mb-4">Période d'Essai</h2>
+            <div className="space-y-4">
+              <p>
+                La période d'essai en CDD est proportionnelle à la durée du contrat :
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Un jour par semaine dans la limite de 2 semaines pour les contrats inférieurs ou égaux à 6 mois</li>
+                <li>Un mois maximum pour les contrats supérieurs à 6 mois</li>
+                <li>Renouvellement non autorisé</li>
+                <li>Rupture libre par l'une ou l'autre des parties</li>
+              </ul>
+            </div>
           </div>
 
-          <div className="bg-yellow-50 rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Sanctions en cas de non-respect</h2>
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Succession de CDD</h2>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold mb-3">Délai de carence</h3>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>1/3 de la durée du contrat pour les contrats de 14 jours ou plus</li>
+                <li>1/2 de la durée du contrat pour les contrats de moins de 14 jours</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold mb-3">Exceptions au délai</h3>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Nouvelle absence du salarié remplacé</li>
+                <li>Travaux urgents de sécurité</li>
+                <li>Emplois saisonniers</li>
+                <li>Contrats d'usage</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-yellow-50 rounded-lg p-6">
+            <h2 className="text-2xl font-semibold mb-4">Sanctions et Requalification</h2>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Requalification possible en CDI</li>
-              <li>Indemnité de requalification</li>
-              <li>Rappel de salaires</li>
-              <li>Dommages et intérêts possibles</li>
+              <li>Requalification en CDI en cas de non-respect des règles</li>
+              <li>Indemnité de requalification minimum d'un mois de salaire</li>
+              <li>Rappel des droits liés au CDI</li>
+              <li>Sanctions pénales possibles pour l'employeur</li>
+              <li>Action possible devant le tribunal du travail</li>
             </ul>
           </div>
         </div>
@@ -83,18 +135,18 @@ export default function CddConditionsPage() {
           <h2 className="text-2xl font-semibold mb-4">Voir aussi</h2>
           <ul className="space-y-3">
             <li>
-              <Link href="/emploi/reglementation-travail/contrats/periode-essai" className="text-blue-600 hover:underline">
-                Quelle est la durée de la période d'essai ?
+              <Link href="/emploi/reglementation-travail/contrats/guide" className="text-blue-600 hover:underline">
+                Guide des types de contrats
               </Link>
             </li>
             <li>
-              <Link href="/emploi/reglementation-travail/contrats/secteurs-cdd-interim" className="text-blue-600 hover:underline">
-                Dans quels secteurs peut-on recourir au CDD d'usage ?
+              <Link href="/emploi/reglementation-travail/contrats/avantages-salariaux" className="text-blue-600 hover:underline">
+                Avantages salariaux en CDD
               </Link>
             </li>
             <li>
-              <Link href="/emploi/reglementation-travail/contrats/rupture-cdd" className="text-blue-600 hover:underline">
-                Comment rompre un CDD ?
+              <Link href="/emploi/reglementation-travail/contrats/rupture" className="text-blue-600 hover:underline">
+                Rupture du contrat de travail
               </Link>
             </li>
           </ul>
@@ -102,7 +154,7 @@ export default function CddConditionsPage() {
 
         {/* Feedback Section */}
         <div className="bg-gray-50 p-6 rounded-lg mt-12">
-          <h2 className="text-2xl font-semibold mb-4">Avez-vous trouvé ce que vous cherchiez?</h2>
+          <h2 className="text-2xl font-semibold mb-4">Cette page vous a-t-elle été utile ?</h2>
           <div className="flex gap-4">
             <button className="bg-blue-600 text-white px-8 py-2 rounded hover:bg-blue-700">
               Oui
@@ -112,7 +164,7 @@ export default function CddConditionsPage() {
             </button>
           </div>
           <p className="text-sm text-gray-500 mt-4">
-            Date de modification : {new Date().toISOString().split('T')[0]}
+            Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}
           </p>
         </div>
       </div>

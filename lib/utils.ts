@@ -56,12 +56,15 @@ export function formatServiceUrl(service: {
   category: string
   parent_slug: string | null
   slug: string
-  canonical_url?: string
+  route_type?: string
+  external_url?: string
 }): string {
-  if (service.canonical_url) {
-    return service.canonical_url
+  // If it's an external URL, return that
+  if (service.route_type === 'external' && service.external_url) {
+    return service.external_url;
   }
 
+  // Otherwise construct the internal URL
   if (service.parent_slug) {
     return `/${service.category}/${service.parent_slug}/${service.slug}`
   }

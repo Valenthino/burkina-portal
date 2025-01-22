@@ -35,9 +35,9 @@ Modern, accessible government portal built with Next.js 14, focusing on performa
 ## Tech Stack
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS
 - **Backend**: Node.js, Express
-- **Database**: PostgreSQL, Prisma
-- **Testing**: Jest, Cypress
-- **Infrastructure**: Docker, Kubernetes
+- **Database**: PostgreSQL through Supabase
+- **Testing**: TBD
+- **Infrastructure**: TBD
 
 ## Core Features
 1. **Authentication System**

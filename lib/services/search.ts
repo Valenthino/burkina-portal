@@ -9,6 +9,8 @@ export type SearchResult = {
   date_creation?: string
   ministere?: string
   categorie?: string
+  section?: string
+  sous_section?: string
 }
 
 export async function searchContent(query: string): Promise<SearchResult[]> {
@@ -20,7 +22,7 @@ export async function searchContent(query: string): Promise<SearchResult[]> {
   const results: SearchResult[] = []
 
   try {
-    // Simplified search query
+    // Search in services with expanded criteria
     const { data: services, error: servicesError } = await supabase
       .from('services')
       .select(`
@@ -30,11 +32,22 @@ export async function searchContent(query: string): Promise<SearchResult[]> {
         slug,
         ministere,
         categorie,
-        date_creation
+        section,
+        sous_section,
+        date_creation,
+        url_existante
       `)
-      .ilike('titre', `%${query}%`)
+      .or(
+        `titre.ilike.%${query}%,` +
+        `description.ilike.%${query}%,` +
+        `ministere.ilike.%${query}%,` +
+        `categorie.ilike.%${query}%,` +
+        `section.ilike.%${query}%,` +
+        `sous_section.ilike.%${query}%`
+      )
       .eq('est_actif', true)
-      .limit(5)
+      .order('ordre', { ascending: true })
+      .limit(10)
 
     if (servicesError) {
       console.error('Erreur de recherche dans les services:', servicesError.message)
@@ -46,43 +59,14 @@ export async function searchContent(query: string): Promise<SearchResult[]> {
         id: service.id,
         title: service.titre,
         description: service.description || '',
-        url: `/services/${service.slug}`,
+        url: service.url_existante || `/${service.slug}`,
         type: 'service' as const,
         date_creation: service.date_creation,
         ministere: service.ministere,
-        categorie: service.categorie
+        categorie: service.categorie,
+        section: service.section,
+        sous_section: service.sous_section
       })))
-    }
-
-    // If no results found in titre, try searching in description
-    if (results.length === 0) {
-      const { data: servicesDesc, error: servicesDescError } = await supabase
-        .from('services')
-        .select(`
-          id,
-          titre,
-          description,
-          slug,
-          ministere,
-          categorie,
-          date_creation
-        `)
-        .ilike('description', `%${query}%`)
-        .eq('est_actif', true)
-        .limit(5)
-
-      if (!servicesDescError && servicesDesc) {
-        results.push(...servicesDesc.map(service => ({
-          id: service.id,
-          title: service.titre,
-          description: service.description || '',
-          url: `/services/${service.slug}`,
-          type: 'service' as const,
-          date_creation: service.date_creation,
-          ministere: service.ministere,
-          categorie: service.categorie
-        })))
-      }
     }
 
     return results
