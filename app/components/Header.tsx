@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import MainMenu from './MainMenu';
+import ClientMainMenu from './ClientMainMenu';
 import SearchBar from './SearchBar';
 import LanguageSelector from './LanguageSelector';
 
@@ -113,7 +113,7 @@ export default function Header() {
       </div>
 
       {/* Composant du menu principal de navigation */}
-      <MainMenu />
+      <ClientMainMenu />
     </header>
   );
 } 

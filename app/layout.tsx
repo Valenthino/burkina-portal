@@ -76,11 +76,17 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="fr" className={inter.className} suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col">
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body 
+        className="min-h-screen flex flex-col"
+        suppressHydrationWarning
+      >
         <AuthProvider>
           <Header />
           <div className="flex-grow">
@@ -90,5 +96,5 @@ export default function RootLayout({
         </AuthProvider>
       </body>
     </html>
-  );
+  )
 }

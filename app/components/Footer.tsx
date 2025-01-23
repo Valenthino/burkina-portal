@@ -20,9 +20,9 @@ export default function Footer() {
     {
       src: '/images/AES_logo.jpg',
       alt: 'Logo AES',
-      width: 90,
-      height: 30,
-      className: "w-[90px] h-[30px]"
+      width: 150,
+      height: 50,
+      className: "w-[150px] h-[50px]"
     },
     {
       src: '/images/Burkina_official Flag.png',
@@ -58,8 +58,8 @@ export default function Footer() {
             Profil de confiance
           </Link>
           <span className="hidden sm:block">•</span>
-          <Link href="/bip" className="hover:text-primary transition-colors">
-            BIP
+          <Link href="https://www.insd.bf" className="hover:text-primary transition-colors">
+            INSD
           </Link>
           <span className="hidden sm:block">•</span>
           <Link href="/droit-auteur" className="hover:text-primary transition-colors">
@@ -85,7 +85,7 @@ export default function Footer() {
         {/* Notice Section */}
         <div className="text-center text-sm text-gray-500 max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
           <p className="mb-4">
-            Les pages disponibles dans le domaine www.gov.bf peuvent contenir des adresses e-mail. L'utilisateur utilisant le lien qui est une adresse e-mail accepte le traitement de ses données (adresse e-mail et données fournies volontairement dans le message) afin d'envoyer des réponses aux questions posées.
+            Les pages disponibles dans le siteweb ne sont que des prototypes de services, et ne represente pas le gouvernement du Burkina Faso.
           </p>
         </div>
 

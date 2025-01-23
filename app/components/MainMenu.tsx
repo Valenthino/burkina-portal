@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { type MegaMenu } from '@/types';
 
 interface MenuLink {
   title: string;
@@ -524,134 +525,249 @@ const megaMenu: { [key: string]: MegaMenuItem } = {
   }
 };
 
-function MenuLink({ link }: { link: MenuItem }) {
-  const [showSubsections, setShowSubsections] = useState(false);
-
-  return (
-    <div className="group relative">
-      <Link
-        href={link.url}
-        className="text-foreground-light hover:text-primary transition-colors block py-2 px-3 rounded-md hover:bg-gray-50"
-        role="menuitem"
-        onMouseEnter={() => setShowSubsections(true)}
-        onMouseLeave={() => setShowSubsections(false)}
-      >
-        <span className="flex items-center justify-between">
-          {link.title}
-          {link.subsections && (
-            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          )}
-        </span>
-      </Link>
-      {link.description && !link.subsections && (
-        <div className="hidden group-hover:block absolute left-full top-0 ml-2 w-64 p-3 bg-white shadow-lg rounded-md text-sm text-gray-600 z-50">
-          {link.description}
-        </div>
-      )}
-      {link.subsections && showSubsections && (
-        <div className="absolute left-full top-0 ml-2 w-[800px] bg-white shadow-lg rounded-lg p-6 z-50">
-          {link.subsections.map((subsection, idx) => (
-            <div key={idx} className="mb-6 last:mb-0">
-              <h4 className="font-semibold text-foreground-dark mb-4 text-lg border-b pb-2">
-                {subsection.title}
-              </h4>
-              <div className="grid grid-cols-2 gap-x-8 gap-y-3">
-                {subsection.links.map((sublink, sublinkIdx) => (
-                  <Link
-                    key={sublinkIdx}
-                    href={sublink.url}
-                    className="block p-3 rounded-md hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="font-medium text-primary-dark">
-                      {sublink.title}
-                    </div>
-                    {sublink.description && (
-                      <div className="text-sm text-gray-600 mt-1">
-                        {sublink.description}
-                      </div>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+interface MainMenuProps {
+  activeMenu: string | null;
+  onMenuChange: (key: string | null) => void;
 }
 
-export default function MainMenu() {
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [expandedMobileSection, setExpandedMobileSection] = useState<string | null>(null);
-
-  const handleMenuEnter = (key: string) => {
-    if (window.innerWidth >= 1024) { // Only on desktop
-      setActiveMenu(key);
-    }
-  };
-
-  const handleMenuLeave = () => {
-    if (window.innerWidth >= 1024) { // Only on desktop
-      setActiveMenu(null);
-    }
-  };
-
-  const toggleMobileSection = (key: string) => {
-    setExpandedMobileSection(expandedMobileSection === key ? null : key);
-  };
+export default function MainMenu({ activeMenu, onMenuChange }: MainMenuProps) {
+  const mainMenuItems = Object.entries(megaMenu).filter(
+    ([key]) => !['agriculture', 'justice', 'sante'].includes(key)
+  );
 
   return (
-    <nav className="bg-white border-b border-gray-200">
-      <div className="container mx-auto px-4">
+    <nav className="border-t border-gray-200 bg-background">
+      <div className="container mx-auto">
         {/* Desktop Menu */}
-        <div className="hidden lg:flex justify-between">
-          {Object.entries(megaMenu).map(([key, menu]) => (
-            <div
-              key={key}
-              className="relative group"
-              onMouseEnter={() => handleMenuEnter(key)}
-              onMouseLeave={handleMenuLeave}
-            >
-              <button
-                className={`px-4 py-3 text-sm font-medium hover:text-primary transition-colors ${
-                  activeMenu === key ? 'text-primary' : 'text-gray-700'
-                }`}
-                aria-expanded={activeMenu === key}
+        <div className="hidden lg:block">
+          <ul className="flex justify-center" role="menubar">
+            {mainMenuItems.map(([key, item]) => (
+              <li
+                key={key}
+                className="relative group"
+                role="none"
               >
-                {menu.title}
-              </button>
+                <Link
+                  href={`/${key === 'citoyens' ? 'services/citoyens' : key}`}
+                  className={`px-6 py-4 text-foreground-dark hover:text-primary flex items-center gap-1 transition-colors relative ${
+                    activeMenu === key ? 'text-primary' : ''
+                  }`}
+                  role="menuitem"
+                  onMouseEnter={() => onMenuChange(key)}
+                  onMouseLeave={() => onMenuChange(null)}
+                >
+                  <span className="relative">
+                    {item.title}
+                    <span className="ml-1.5 text-xs opacity-70" aria-hidden="true">▾</span>
+                    {activeMenu === key && (
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></span>
+                    )}
+                  </span>
+                </Link>
 
-              {activeMenu === key && (
-                <div className="absolute left-0 w-screen bg-white shadow-lg border-t border-gray-100 -ml-4 z-50">
-                  <div className="container mx-auto px-4 py-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                      {menu.sections.map((section, idx) => (
-                        <div key={idx} className="space-y-4">
-                          <h3 className="font-medium text-gray-900">{section.title}</h3>
-                          <ul className="space-y-2">
-                            {section.links.map((link, linkIdx) => (
-                              <li key={linkIdx}>
-                                <Link
-                                  href={link.url}
-                                  className="text-sm text-gray-600 hover:text-primary transition-colors block py-1"
-                                >
-                                  {link.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
+                {activeMenu === key && (
+                  <div 
+                    className="absolute left-1/2 transform -translate-x-1/2 top-full w-[calc(100vw-2rem)] max-w-[1200px] bg-white rounded-lg shadow-lg py-6 z-50 mx-auto"
+                    style={{
+                      maxHeight: 'calc(100vh - 200px)',
+                      overflowY: 'auto'
+                    }}
+                    role="menu"
+                    onMouseEnter={() => onMenuChange(key)}
+                    onMouseLeave={() => onMenuChange(null)}
+                  >
+                    <div className="max-w-5xl mx-auto px-8">
+                      <div className="grid grid-cols-2 gap-x-12 gap-y-8">
+                        <div className="space-y-8">
+                          <div>
+                            <h3 className="font-semibold text-gray-900 text-lg mb-4 pb-2 border-b">
+                              {item.sections[0].title}
+                            </h3>
+                            <ul className="space-y-3">
+                              {item.sections[0].links.map((link, linkIdx) => (
+                                <li key={linkIdx} role="none" className="group">
+                                  <Link
+                                    href={link.url}
+                                    className="block group-hover:bg-primary/[0.06] hover:bg-primary/[0.08] rounded-lg transition-all duration-200 p-4 relative group/link"
+                                  >
+                                    <div className="flex items-start justify-between gap-4">
+                                      <div>
+                                        <span className="text-gray-900 font-medium group-hover/link:text-primary transition-colors">
+                                          {link.title}
+                                        </span>
+                                        {link.description && (
+                                          <span className="text-sm text-gray-600 block mt-1 leading-relaxed group-hover/link:text-gray-700">
+                                            {link.description}
+                                          </span>
+                                        )}
+                                      </div>
+                                      {(link.title === "Carte d'identité" || 
+                                        link.title === "Passeport" ||
+                                        link.title === "Couverture santé" ||
+                                        link.title === "Concours de la fonction publique") && (
+                                        <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                          Nouveau
+                                        </span>
+                                      )}
+                                      {(link.title === "Assurance maladie" ||
+                                        link.title === "Formation continue" ||
+                                        link.title === "Marchés publics") && (
+                                        <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                          En cours
+                                        </span>
+                                      )}
+                                    </div>
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          {item.sections[2] && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 text-lg mb-4 pb-2 border-b">
+                                {item.sections[2].title}
+                              </h3>
+                              <ul className="space-y-3">
+                                {item.sections[2].links.map((link, linkIdx) => (
+                                  <li key={linkIdx} role="none" className="group">
+                                    <Link
+                                      href={link.url}
+                                      className="block group-hover:bg-primary/[0.06] hover:bg-primary/[0.08] rounded-lg transition-all duration-200 p-4 relative group/link"
+                                    >
+                                      <div className="flex items-start justify-between gap-4">
+                                        <div>
+                                          <span className="text-gray-900 font-medium group-hover/link:text-primary transition-colors">
+                                            {link.title}
+                                          </span>
+                                          {link.description && (
+                                            <span className="text-sm text-gray-600 block mt-1 leading-relaxed group-hover/link:text-gray-700">
+                                              {link.description}
+                                            </span>
+                                          )}
+                                        </div>
+                                        {(link.title === "Carte d'identité" || 
+                                          link.title === "Passeport" ||
+                                          link.title === "Couverture santé" ||
+                                          link.title === "Concours de la fonction publique") && (
+                                            <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                              Nouveau
+                                            </span>
+                                          )}
+                                        {(link.title === "Assurance maladie" ||
+                                          link.title === "Formation continue" ||
+                                          link.title === "Marchés publics") && (
+                                          <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            En cours
+                                          </span>
+                                        )}
+                                      </div>
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </div>
-                      ))}
+
+                        <div className="space-y-8">
+                          {item.sections[1] && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 text-lg mb-4 pb-2 border-b">
+                                {item.sections[1].title}
+                              </h3>
+                              <ul className="space-y-3">
+                                {item.sections[1].links.map((link, linkIdx) => (
+                                  <li key={linkIdx} role="none" className="group">
+                                    <Link
+                                      href={link.url}
+                                      className="block group-hover:bg-primary/[0.06] hover:bg-primary/[0.08] rounded-lg transition-all duration-200 p-4 relative group/link"
+                                    >
+                                      <div className="flex items-start justify-between gap-4">
+                                        <div>
+                                          <span className="text-gray-900 font-medium group-hover/link:text-primary transition-colors">
+                                            {link.title}
+                                          </span>
+                                          {link.description && (
+                                            <span className="text-sm text-gray-600 block mt-1 leading-relaxed group-hover/link:text-gray-700">
+                                              {link.description}
+                                            </span>
+                                          )}
+                                        </div>
+                                        {(link.title === "Carte d'identité" || 
+                                          link.title === "Passeport" ||
+                                          link.title === "Couverture santé" ||
+                                          link.title === "Concours de la fonction publique") && (
+                                            <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                              Nouveau
+                                            </span>
+                                          )}
+                                        {(link.title === "Assurance maladie" ||
+                                          link.title === "Formation continue" ||
+                                          link.title === "Marchés publics") && (
+                                          <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            En cours
+                                          </span>
+                                        )}
+                                      </div>
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {item.sections[3] && (
+                            <div>
+                              <h3 className="font-semibold text-gray-900 text-lg mb-4 pb-2 border-b">
+                                {item.sections[3].title}
+                              </h3>
+                              <ul className="space-y-3">
+                                {item.sections[3].links.map((link, linkIdx) => (
+                                  <li key={linkIdx} role="none" className="group">
+                                    <Link
+                                      href={link.url}
+                                      className="block group-hover:bg-primary/[0.06] hover:bg-primary/[0.08] rounded-lg transition-all duration-200 p-4 relative group/link"
+                                    >
+                                      <div className="flex items-start justify-between gap-4">
+                                        <div>
+                                          <span className="text-gray-900 font-medium group-hover/link:text-primary transition-colors">
+                                            {link.title}
+                                          </span>
+                                          {link.description && (
+                                            <span className="text-sm text-gray-600 block mt-1 leading-relaxed group-hover/link:text-gray-700">
+                                              {link.description}
+                                            </span>
+                                          )}
+                                        </div>
+                                        {(link.title === "Carte d'identité" || 
+                                          link.title === "Passeport" ||
+                                          link.title === "Couverture santé" ||
+                                          link.title === "Concours de la fonction publique") && (
+                                            <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                              Nouveau
+                                            </span>
+                                          )}
+                                        {(link.title === "Assurance maladie" ||
+                                          link.title === "Formation continue" ||
+                                          link.title === "Marchés publics") && (
+                                          <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            En cours
+                                          </span>
+                                        )}
+                                      </div>
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Mobile Menu */}
@@ -659,14 +775,14 @@ export default function MainMenu() {
           {Object.entries(megaMenu).map(([key, menu]) => (
             <div key={key} className="border-t border-gray-100">
               <button
-                className="w-full py-3 px-4 flex justify-between items-center text-left"
-                onClick={() => toggleMobileSection(key)}
-                aria-expanded={expandedMobileSection === key}
+                className="w-full py-4 px-6 flex justify-between items-center text-left"
+                onClick={() => onMenuChange(activeMenu === key ? null : key)}
+                aria-expanded={activeMenu === key}
               >
                 <span className="font-medium text-gray-900">{menu.title}</span>
                 <svg
-                  className={`w-5 h-5 text-gray-500 transition-transform ${
-                    expandedMobileSection === key ? 'rotate-180' : ''
+                  className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+                    activeMenu === key ? 'rotate-180' : ''
                   }`}
                   fill="none"
                   stroke="currentColor"
@@ -676,19 +792,47 @@ export default function MainMenu() {
                 </svg>
               </button>
 
-              {expandedMobileSection === key && (
-                <div className="px-4 pb-4">
+              {activeMenu === key && (
+                <div className="px-6 pb-4">
                   {menu.sections.map((section, idx) => (
                     <div key={idx} className="mb-6 last:mb-0">
-                      <h3 className="font-medium text-sm text-gray-900 mb-3">{section.title}</h3>
-                      <ul className="space-y-2">
+                      <h3 className="font-medium text-gray-900 mb-3 pb-2 border-b">
+                        {section.title}
+                      </h3>
+                      <ul className="space-y-3">
                         {section.links.map((link, linkIdx) => (
                           <li key={linkIdx}>
                             <Link
                               href={link.url}
-                              className="text-sm text-gray-600 hover:text-primary transition-colors block py-1"
+                              className="block hover:bg-primary/[0.06] active:bg-primary/[0.08] rounded-lg p-4 transition-all duration-200 relative group/link"
                             >
-                              {link.title}
+                              <div className="flex items-start justify-between gap-4">
+                                <div>
+                                  <span className="text-gray-900 font-medium group-hover/link:text-primary transition-colors">
+                                    {link.title}
+                                  </span>
+                                  {link.description && (
+                                    <span className="text-sm text-gray-600 block mt-1 group-hover/link:text-gray-700">
+                                      {link.description}
+                                    </span>
+                                  )}
+                                </div>
+                                {(link.title === "Carte d'identité" || 
+                                  link.title === "Passeport" ||
+                                  link.title === "Couverture santé" ||
+                                  link.title === "Concours de la fonction publique") && (
+                                  <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                    Nouveau
+                                  </span>
+                                )}
+                                {(link.title === "Assurance maladie" ||
+                                  link.title === "Formation continue" ||
+                                  link.title === "Marchés publics") && (
+                                  <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    En cours
+                                  </span>
+                                )}
+                              </div>
                             </Link>
                           </li>
                         ))}
