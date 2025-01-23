@@ -120,30 +120,35 @@ export default function CategoryLayout({ categoryKey }: CategoryLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-primary text-white py-12">
+      <section className="bg-primary text-white py-8 sm:py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">{category.title}</h1>
-          <p className="text-lg text-secondary/90 max-w-2xl">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
+            {category.title}
+          </h1>
+          <p className="text-base sm:text-lg text-secondary/90 max-w-2xl leading-relaxed">
             Accédez à tous les services et informations relatifs à {category.title.toLowerCase()}
           </p>
         </div>
       </section>
 
       {/* Services Grid */}
-      <section className="py-12">
+      <section className="py-8 sm:py-12">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {category.sections.map((section, idx) => (
-              <div key={idx} className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-bold text-foreground-dark mb-4">
+              <div 
+                key={idx} 
+                className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow"
+              >
+                <h2 className="text-lg sm:text-xl font-bold text-foreground-dark mb-3 sm:mb-4">
                   {section.title}
                 </h2>
-                <ul className="space-y-3">
+                <ul className="space-y-2 sm:space-y-3">
                   {section.links.map((link, linkIdx) => (
                     <li key={linkIdx}>
                       <Link
                         href={link.url}
-                        className="text-foreground-light hover:text-primary transition-colors block"
+                        className="text-sm sm:text-base text-foreground-light hover:text-primary transition-colors block py-1"
                       >
                         {link.title}
                       </Link>

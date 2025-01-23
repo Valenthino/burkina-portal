@@ -43,55 +43,55 @@ export default function Footer() {
   return (
     <footer className="bg-white text-gray-600 border-t">
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Main Links Section */}
-        <div className="flex justify-center space-x-6 text-sm mb-8">
+        <div className="flex flex-col sm:flex-row justify-center items-center sm:space-x-6 text-sm mb-6 sm:mb-8 space-y-4 sm:space-y-0">
           <Link href="/politique-cookies" className="hover:text-primary transition-colors">
             Politique de cookies
           </Link>
-          <span>•</span>
+          <span className="hidden sm:block">•</span>
           <Link href="/fonction-publique" className="hover:text-primary transition-colors">
             Fonction publique
           </Link>
-          <span>•</span>
+          <span className="hidden sm:block">•</span>
           <Link href="/profil-confiance" className="hover:text-primary transition-colors">
             Profil de confiance
           </Link>
-          <span>•</span>
+          <span className="hidden sm:block">•</span>
           <Link href="/bip" className="hover:text-primary transition-colors">
             BIP
           </Link>
-          <span>•</span>
+          <span className="hidden sm:block">•</span>
           <Link href="/droit-auteur" className="hover:text-primary transition-colors">
             Droit d'auteur
           </Link>
         </div>
 
         {/* Secondary Links */}
-        <div className="flex justify-center space-x-6 text-sm mb-8">
+        <div className="flex flex-col sm:flex-row justify-center items-center sm:space-x-6 text-sm mb-6 sm:mb-8 space-y-4 sm:space-y-0">
           <Link href="/conditions-utilisation" className="hover:text-primary transition-colors">
             Conditions d'utilisation
           </Link>
-          <span>•</span>
+          <span className="hidden sm:block">•</span>
           <Link href="/geoportail" className="hover:text-primary transition-colors">
             Géoportail
           </Link>
-          <span>•</span>
+          <span className="hidden sm:block">•</span>
           <Link href="/declaration-accessibilite" className="hover:text-primary transition-colors">
             Déclaration d'accessibilité
           </Link>
         </div>
 
         {/* Notice Section */}
-        <div className="text-center text-sm text-gray-500 max-w-3xl mx-auto mb-8">
+        <div className="text-center text-sm text-gray-500 max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
           <p className="mb-4">
             Les pages disponibles dans le domaine www.gov.bf peuvent contenir des adresses e-mail. L'utilisateur utilisant le lien qui est une adresse e-mail accepte le traitement de ses données (adresse e-mail et données fournies volontairement dans le message) afin d'envoyer des réponses aux questions posées.
           </p>
         </div>
 
         {/* Attribution Section */}
-        <div className="flex justify-center items-center space-x-4 text-sm mb-8">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 text-sm mb-6 sm:mb-8 px-4 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
             <Image
               src="/images/cc-by.png"
               alt="Creative Commons License"
@@ -106,7 +106,7 @@ export default function Footer() {
         </div>
 
         {/* Organizations Section - Miniature Style */}
-        <div className="flex justify-center items-center gap-6 mb-8">
+        <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mb-6 sm:mb-8 px-4">
           {organizations.map((org, index) => (
             <div key={index} className="relative flex items-center justify-center">
               <Image
@@ -124,7 +124,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="text-center text-sm">
+        <div className="text-center text-sm px-4">
           <p>© {year} - Un projet de l'Agence Nationale des Services et Systèmes d'Information (ANSSI)</p>
         </div>
       </div>
@@ -137,47 +137,47 @@ export default function Footer() {
           <div className="absolute inset-0 bg-primary/90" />
           {/* Gradient overlay - stronger on left, fading to right */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-transparent" 
-               style={{ clipPath: 'polygon(0 0, 66% 0, 66% 100%, 0 100%)' }} />
+               style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }} />
           <Image
             src="/images/Sitarail_bobo.jpg"
             alt="Gare de Sitarail à Bobo-Dioulasso"
             fill
-            className="object-cover object-right opacity-25"
+            className="object-cover object-center sm:object-right opacity-25"
             priority
           />
         </div>
 
         {/* Content */}
-        <div className="container mx-auto px-4 py-16 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="container mx-auto px-4 py-8 sm:py-16 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
             <div className="relative z-20">
-              <h2 className="text-2xl font-bold mb-6">Toutes les coordonnées</h2>
-              <ul className="space-y-3">
-                <li><Link href="/contact" className="hover:underline">Emplois</Link></li>
-                <li><Link href="/contact" className="hover:underline">Immigration et citoyenneté</Link></li>
-                <li><Link href="/contact" className="hover:underline">Voyage et tourisme</Link></li>
-                <li><Link href="/contact" className="hover:underline">Entreprises</Link></li>
-                <li><Link href="/contact" className="hover:underline">Prestations</Link></li>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Toutes les coordonnées</h2>
+              <ul className="space-y-2 sm:space-y-3">
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Emplois</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Immigration et citoyenneté</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Voyage et tourisme</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Entreprises</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Prestations</Link></li>
               </ul>
             </div>
             <div className="relative z-20">
-              <h2 className="text-2xl font-bold mb-6">Ministères et organismes</h2>
-              <ul className="space-y-3">
-                <li><Link href="/contact" className="hover:underline">Impôts</Link></li>
-                <li><Link href="/contact" className="hover:underline">Environnement et ressources naturelles</Link></li>
-                <li><Link href="/contact" className="hover:underline">Défense nationale et Forces armées</Link></li>
-                <li><Link href="/contact" className="hover:underline">Culture et sport</Link></li>
-                <li><Link href="/contact" className="hover:underline">Services de police et urgences</Link></li>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Ministères et organismes</h2>
+              <ul className="space-y-2 sm:space-y-3">
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Impôts</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Environnement et ressources naturelles</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Défense nationale et Forces armées</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Culture et sport</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Services de police et urgences</Link></li>
               </ul>
             </div>
             <div className="relative z-20">
-              <h2 className="text-2xl font-bold mb-6">À propos du gouvernement</h2>
-              <ul className="space-y-3">
-                <li><Link href="/contact" className="hover:underline">Le Burkina et le monde</Link></li>
-                <li><Link href="/contact" className="hover:underline">Argent et finances</Link></li>
-                <li><Link href="/contact" className="hover:underline">Science et innovation</Link></li>
-                <li><Link href="/contact" className="hover:underline">Autochtones</Link></li>
-                <li><Link href="/contact" className="hover:underline">Vétérans et militaires</Link></li>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">À propos du gouvernement</h2>
+              <ul className="space-y-2 sm:space-y-3">
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Le Burkina et le monde</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Argent et finances</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Science et innovation</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Autochtones</Link></li>
+                <li><Link href="/contact" className="hover:underline text-sm sm:text-base">Vétérans et militaires</Link></li>
               </ul>
             </div>
           </div>

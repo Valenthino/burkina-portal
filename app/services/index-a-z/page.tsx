@@ -11,11 +11,26 @@ interface IndexItem {
 const indexItems: IndexItem[] = [
   // A
   {
+    title: "Arts et traditions",
+    href: "/burkina/histoire-culture/arts",
+    category: "Culture et Patrimoine"
+  },
+  {
+    title: "Assistance aux agents",
+    href: "/fonction-publique/services/assistance",
+    category: "Services de la Fonction Publique"
+  },
+  {
     title: "Avantages salariaux en CDD",
     href: "/emploi/reglementation-travail/contrats/avantages-salariaux-cdd",
     category: "Contrats de travail"
   },
   // C
+  {
+    title: "Circuits touristiques",
+    href: "/burkina/decouvrir/circuits",
+    category: "Tourisme"
+  },
   {
     title: "Conditions d'embauche en CDD",
     href: "/emploi/reglementation-travail/contrats/cdd-conditions",
@@ -27,11 +42,26 @@ const indexItems: IndexItem[] = [
     category: "Contrats de travail"
   },
   {
+    title: "Congés et absences",
+    href: "/fonction-publique/administration/conges",
+    category: "Administration Publique"
+  },
+  {
     title: "Contrat de travail - Guide complet",
     href: "/emploi/reglementation-travail/contrats",
     category: "Contrats de travail"
   },
+  {
+    title: "Culture et traditions",
+    href: "/burkina/histoire-culture",
+    category: "Culture et Patrimoine"
+  },
   // D
+  {
+    title: "Documents administratifs",
+    href: "/fonction-publique/services/documents",
+    category: "Services de la Fonction Publique"
+  },
   {
     title: "Droits collectifs en CDD",
     href: "/emploi/reglementation-travail/contrats/droits-collectifs-cdd",
@@ -39,11 +69,31 @@ const indexItems: IndexItem[] = [
   },
   // E
   {
+    title: "Écoles de formation",
+    href: "/fonction-publique/formation/ecoles",
+    category: "Formation Publique"
+  },
+  {
     title: "Équipements collectifs en CDD",
     href: "/emploi/reglementation-travail/contrats/equipements-collectifs-cdd",
     category: "Contrats de travail"
   },
+  {
+    title: "Espace agent",
+    href: "/fonction-publique/services/espace-agent",
+    category: "Services de la Fonction Publique"
+  },
+  {
+    title: "Examens professionnels",
+    href: "/fonction-publique/formation/examens",
+    category: "Formation Publique"
+  },
   // F
+  {
+    title: "Formation continue",
+    href: "/fonction-publique/formation/continue",
+    category: "Formation Publique"
+  },
   {
     title: "Formation professionnelle",
     href: "/emploi/formation-professionnelle",
@@ -51,15 +101,85 @@ const indexItems: IndexItem[] = [
   },
   // H
   {
+    title: "Hébergement touristique",
+    href: "/burkina/decouvrir/tourisme#hebergement",
+    category: "Tourisme"
+  },
+  {
     title: "Heures supplémentaires",
     href: "/emploi/reglementation-travail/temps-travail/heures-supplementaires",
     category: "Temps de travail"
+  },
+  {
+    title: "Histoire du Burkina Faso",
+    href: "/burkina/histoire-culture/histoire",
+    category: "Culture et Patrimoine"
+  },
+  // L
+  {
+    title: "Langues nationales",
+    href: "/burkina/histoire-culture/langues",
+    category: "Culture et Patrimoine"
+  },
+  // M
+  {
+    title: "Mutations",
+    href: "/fonction-publique/carriere/mutations",
+    category: "Carrière Publique"
+  },
+  // P
+  {
+    title: "Patrimoine culturel",
+    href: "/burkina/histoire-culture/patrimoine",
+    category: "Culture et Patrimoine"
+  },
+  // R
+  {
+    title: "Réclamations",
+    href: "/fonction-publique/services/reclamations",
+    category: "Services de la Fonction Publique"
+  },
+  {
+    title: "Rémunération",
+    href: "/fonction-publique/administration/remuneration",
+    category: "Administration Publique"
+  },
+  {
+    title: "Retraite",
+    href: "/fonction-publique/administration/retraite",
+    category: "Administration Publique"
+  },
+  // S
+  {
+    title: "Sites historiques",
+    href: "/burkina/histoire-culture/sites",
+    category: "Culture et Patrimoine"
+  },
+  {
+    title: "Sites touristiques",
+    href: "/burkina/decouvrir/tourisme#sites",
+    category: "Tourisme"
+  },
+  {
+    title: "Stages de formation",
+    href: "/fonction-publique/formation/stages",
+    category: "Formation Publique"
+  },
+  {
+    title: "Statut général",
+    href: "/fonction-publique/administration/statut",
+    category: "Administration Publique"
   },
   // T
   {
     title: "Temps de travail en CDD",
     href: "/emploi/reglementation-travail/contrats/temps-travail-cdd",
     category: "Contrats de travail"
+  },
+  {
+    title: "Tourisme au Burkina Faso",
+    href: "/burkina/decouvrir/tourisme",
+    category: "Tourisme"
   }
 ];
 
@@ -108,6 +228,27 @@ export default function IndexAZPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Index A-Z des Services</h1>
 
+        {/* Catégories */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Parcourir par catégorie</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from(new Set(indexItems.map(item => item.category))).sort().map((category, index) => (
+              <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-lg mb-2">{category}</h3>
+                <ul className="space-y-1">
+                  {indexItems.filter(item => item.category === category).map((item, itemIndex) => (
+                    <li key={itemIndex}>
+                      <Link href={item.href} className="text-blue-600 hover:underline">
+                        {item.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Alphabet Navigation */}
         <div className="flex flex-wrap gap-2 mb-8 bg-gray-50 p-4 rounded-lg">
           {groupedItems.map(([letter]) => (
@@ -154,7 +295,7 @@ export default function IndexAZPage() {
             </button>
           </div>
           <p className="text-sm text-gray-500 mt-4">
-            Date de modification : {new Date().toISOString().split('T')[0]}
+            Date de modification : {new Date().toLocaleDateString('fr-FR')}
           </p>
         </div>
       </div>

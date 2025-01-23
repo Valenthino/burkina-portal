@@ -585,229 +585,120 @@ function MenuLink({ link }: { link: MenuItem }) {
 
 export default function MainMenu() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const [expandedMobileSection, setExpandedMobileSection] = useState<string | null>(null);
 
   const handleMenuEnter = (key: string) => {
-    if (mounted) {
+    if (window.innerWidth >= 1024) { // Only on desktop
       setActiveMenu(key);
     }
   };
 
   const handleMenuLeave = () => {
-    if (mounted) {
+    if (window.innerWidth >= 1024) { // Only on desktop
       setActiveMenu(null);
     }
   };
 
-  const toggleMobileMenu = () => {
-    if (mounted) {
-      setIsMobileMenuOpen(!isMobileMenuOpen);
-    }
+  const toggleMobileSection = (key: string) => {
+    setExpandedMobileSection(expandedMobileSection === key ? null : key);
   };
 
-  const mainMenuItems = Object.entries(megaMenu).filter(
-    ([key]) => !['agriculture', 'justice', 'sante'].includes(key)
-  );
-
   return (
-    <nav className="border-t border-gray-200 bg-background" suppressHydrationWarning>
-      <div className="container mx-auto">
-        <div className="hidden lg:block">
-          <ul className="flex justify-center" role="menubar">
-            {mainMenuItems.map(([key, item]) => (
-              <li
-                key={key}
-                className="relative"
-                onMouseEnter={() => handleMenuEnter(key)}
-                onMouseLeave={handleMenuLeave}
-                role="none"
-              >
-                <Link
-                  href={`/${key === 'citoyens' ? 'services/citoyens' : key}`}
-                  className={`px-6 py-3 text-foreground-dark hover:bg-gray-50 flex items-center gap-1 w-full transition-colors ${
-                    activeMenu === key ? 'bg-gray-50' : ''
-                  }`}
-                  role="menuitem"
-                >
-                  {item.title}
-                  <span className="ml-1" aria-hidden="true">▾</span>
-                </Link>
-
-                {activeMenu === key && (
-                  <div 
-                    className="absolute left-1/2 transform -translate-x-1/2 top-full w-screen max-w-7xl bg-background shadow-lg border-t border-gray-200 py-2 z-50"
-                    role="menu"
-                  >
-                    <div className="container mx-auto px-2">
-                      <div className="grid grid-cols-2 gap-x-2 gap-y-2 justify-center max-w-4xl mx-auto">
-                        <div className="space-y-2">
-                          <div className="min-w-[200px]">
-                            <h3 className="font-semibold text-foreground-dark mb-1 text-lg border-b pb-1">
-                              {item.sections[0].title}
-                            </h3>
-                            <ul className="space-y-0.5">
-                              {item.sections[0].links.map((link, linkIdx) => (
-                                <li key={linkIdx} role="none" className="group">
-                                  <Link
-                                    href={link.url}
-                                    className="text-blue-800 hover:text-blue-600 transition-colors block py-0.5 px-2 rounded-sm hover:bg-gray-50"
-                                  >
-                                    <span className="block underline">{link.title}</span>
-                                    {link.description && (
-                                      <span className="text-xs text-gray-600 block mt-0.5 no-underline">
-                                        {link.description}
-                                      </span>
-                                    )}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          {item.sections[2] && (
-                            <div className="min-w-[200px]">
-                              <h3 className="font-semibold text-foreground-dark mb-1 text-lg border-b pb-1">
-                                {item.sections[2].title}
-                              </h3>
-                              <ul className="space-y-0.5">
-                                {item.sections[2].links.map((link, linkIdx) => (
-                                  <li key={linkIdx} role="none" className="group">
-                                    <Link
-                                      href={link.url}
-                                      className="text-blue-800 hover:text-blue-600 transition-colors block py-0.5 px-2 rounded-sm hover:bg-gray-50"
-                                    >
-                                      <span className="block underline">{link.title}</span>
-                                      {link.description && (
-                                        <span className="text-xs text-gray-600 block mt-0.5 no-underline">
-                                          {link.description}
-                                        </span>
-                                      )}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="space-y-2">
-                          {item.sections[1] && (
-                            <div className="min-w-[200px]">
-                              <h3 className="font-semibold text-foreground-dark mb-1 text-lg border-b pb-1">
-                                {item.sections[1].title}
-                              </h3>
-                              <ul className="space-y-0.5">
-                                {item.sections[1].links.map((link, linkIdx) => (
-                                  <li key={linkIdx} role="none" className="group">
-                                    <Link
-                                      href={link.url}
-                                      className="text-blue-800 hover:text-blue-600 transition-colors block py-0.5 px-2 rounded-sm hover:bg-gray-50"
-                                    >
-                                      <span className="block underline">{link.title}</span>
-                                      {link.description && (
-                                        <span className="text-xs text-gray-600 block mt-0.5 no-underline">
-                                          {link.description}
-                                        </span>
-                                      )}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                          {item.sections[3] && (
-                            <div className="min-w-[200px]">
-                              <h3 className="font-semibold text-foreground-dark mb-1 text-lg border-b pb-1">
-                                {item.sections[3].title}
-                              </h3>
-                              <ul className="space-y-0.5">
-                                {item.sections[3].links.map((link, linkIdx) => (
-                                  <li key={linkIdx} role="none" className="group">
-                                    <Link
-                                      href={link.url}
-                                      className="text-blue-800 hover:text-blue-600 transition-colors block py-0.5 px-2 rounded-sm hover:bg-gray-50"
-                                    >
-                                      <span className="block underline">{link.title}</span>
-                                      {link.description && (
-                                        <span className="text-xs text-gray-600 block mt-0.5 no-underline">
-                                          {link.description}
-                                        </span>
-                                      )}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="lg:hidden">
-          <button
-            onClick={toggleMobileMenu}
-            className="w-full px-4 py-3 flex justify-between items-center text-foreground-dark"
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="mobile-menu"
-          >
-            Menu principal
-            <span 
-              className={`transform transition-transform ${isMobileMenuOpen ? 'rotate-180' : ''}`}
-              aria-hidden="true"
+    <nav className="bg-white border-b border-gray-200">
+      <div className="container mx-auto px-4">
+        {/* Desktop Menu */}
+        <div className="hidden lg:flex justify-between">
+          {Object.entries(megaMenu).map(([key, menu]) => (
+            <div
+              key={key}
+              className="relative group"
+              onMouseEnter={() => handleMenuEnter(key)}
+              onMouseLeave={handleMenuLeave}
             >
-              ▾
-            </span>
-          </button>
+              <button
+                className={`px-4 py-3 text-sm font-medium hover:text-primary transition-colors ${
+                  activeMenu === key ? 'text-primary' : 'text-gray-700'
+                }`}
+                aria-expanded={activeMenu === key}
+              >
+                {menu.title}
+              </button>
 
-          {isMobileMenuOpen && (
-            <div id="mobile-menu" className="border-t border-gray-200">
-              {mainMenuItems.map(([key, item]) => (
-                <div key={key} className="border-b border-gray-200">
-                  <button
-                    className="w-full px-4 py-3 flex justify-between items-center text-foreground-dark hover:bg-gray-50"
-                    onClick={() => setActiveMenu(activeMenu === key ? null : key)}
-                  >
-                    {item.title}
-                    <span 
-                      className={`transform transition-transform ${activeMenu === key ? 'rotate-180' : ''}`}
-                      aria-hidden="true"
-                    >
-                      ▾
-                    </span>
-                  </button>
-
-                  {activeMenu === key && (
-                    <div className="bg-background-light px-4 py-3">
-                      {item.sections.map((section, idx) => (
-                        <div key={idx} className="mb-4 last:mb-0">
-                          <h3 className="font-semibold text-foreground-dark mb-2">
-                            {section.title}
-                          </h3>
-                          <ul className="space-y-2 pl-4">
+              {activeMenu === key && (
+                <div className="absolute left-0 w-screen bg-white shadow-lg border-t border-gray-100 -ml-4 z-50">
+                  <div className="container mx-auto px-4 py-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                      {menu.sections.map((section, idx) => (
+                        <div key={idx} className="space-y-4">
+                          <h3 className="font-medium text-gray-900">{section.title}</h3>
+                          <ul className="space-y-2">
                             {section.links.map((link, linkIdx) => (
                               <li key={linkIdx}>
-                                <MenuLink link={link} />
+                                <Link
+                                  href={link.url}
+                                  className="text-sm text-gray-600 hover:text-primary transition-colors block py-1"
+                                >
+                                  {link.title}
+                                </Link>
                               </li>
                             ))}
                           </ul>
                         </div>
                       ))}
                     </div>
-                  )}
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
-          )}
+          ))}
+        </div>
+
+        {/* Mobile Menu */}
+        <div className="lg:hidden">
+          {Object.entries(megaMenu).map(([key, menu]) => (
+            <div key={key} className="border-t border-gray-100">
+              <button
+                className="w-full py-3 px-4 flex justify-between items-center text-left"
+                onClick={() => toggleMobileSection(key)}
+                aria-expanded={expandedMobileSection === key}
+              >
+                <span className="font-medium text-gray-900">{menu.title}</span>
+                <svg
+                  className={`w-5 h-5 text-gray-500 transition-transform ${
+                    expandedMobileSection === key ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {expandedMobileSection === key && (
+                <div className="px-4 pb-4">
+                  {menu.sections.map((section, idx) => (
+                    <div key={idx} className="mb-6 last:mb-0">
+                      <h3 className="font-medium text-sm text-gray-900 mb-3">{section.title}</h3>
+                      <ul className="space-y-2">
+                        {section.links.map((link, linkIdx) => (
+                          <li key={linkIdx}>
+                            <Link
+                              href={link.url}
+                              className="text-sm text-gray-600 hover:text-primary transition-colors block py-1"
+                            >
+                              {link.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </nav>
