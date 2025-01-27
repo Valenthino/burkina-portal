@@ -1,78 +1,142 @@
-import { executeQuery } from '@/lib/db-utils';
-import { NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const ministries = await executeQuery({
-      query: `
-        SELECT 
-          m.id,
-          m.nom as name,
-          m.nom_court as short_name,
-          m.ministre as minister,
-          m.description,
-          m.slug,
-          m.created_at,
-          m.updated_at,
-          COALESCE(
-            json_agg(
-              DISTINCT jsonb_build_object(
-                'id', s.id,
-                'nom', s.nom,
-                'type', s.type,
-                'route_type', s.route_type,
-                'slug', s.slug,
-                'category', s.category,
-                'parent_slug', s.parent_slug
-              )
-            ) FILTER (WHERE s.id IS NOT NULL), 
-            '[]'
-          ) as services,
-          COALESCE(
-            json_agg(
-              DISTINCT jsonb_build_object(
-                'id', mi.id,
-                'description', mi.description
-              )
-            ) FILTER (WHERE mi.id IS NOT NULL), 
-            '[]'
-          ) as missions
-        FROM ministeres m
-        LEFT JOIN services_ministere s ON m.id = s.ministere_id
-        LEFT JOIN missions_ministere mi ON m.id = mi.ministere_id
-        GROUP BY m.id
-      `,
-    });
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
 
-    return NextResponse.json({ success: true, data: ministries });
+    // Test database connection first
+    const { error: connectionError } = await supabase
+      .from('ministeres')
+      .select('id')
+      .limit(1)
+
+    if (connectionError) {
+      console.error('Database connection error:', connectionError)
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Database connection failed',
+          details: connectionError.message,
+          code: connectionError.code
+        },
+        { status: 500 }
+      )
+    }
+
+    const { data: ministries, error } = await supabase
+      .from('ministeres')
+      .select(`
+        id,
+        nom,
+        nom_court,
+        ministre,
+        description,
+        slug,
+        created_at,
+        updated_at,
+        services:services_ministere(
+          id,
+          nom,
+          type,
+          route_type,
+          slug,
+          categorie,
+          sous_categorie
+        ),
+        missions:missions_ministere(
+          id,
+          description
+        )
+      `)
+      .eq('est_actif', true)
+      .order('nom')
+
+    if (error) {
+      console.error('Error fetching ministries:', error)
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Failed to fetch ministries',
+          details: error.message,
+          code: error.code
+        },
+        { status: 500 }
+      )
+    }
+
+    if (!ministries || ministries.length === 0) {
+      return NextResponse.json(
+        { 
+          success: true, 
+          data: [],
+          message: 'No active ministries found'
+        },
+        { status: 200 }
+      )
+    }
+
+    return NextResponse.json({ success: true, data: ministries })
   } catch (error) {
-    console.error('Error fetching ministries:', error);
+    console.error('Unexpected error in ministries API:', error)
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch ministries' },
+      { 
+        success: false, 
+        error: 'An unexpected error occurred',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
-    );
+    )
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { name, shortName, minister, description, slug } = body;
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
+    const body = await request.json()
+    const { nom, nom_court, ministre, description, slug } = body
 
-    const result = await executeQuery({
-      query: `
-        INSERT INTO ministeres (nom, nom_court, ministre, description, slug)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING *
-      `,
-      values: [name, shortName, minister, description, slug],
-    });
+    const { data: ministry, error } = await supabase
+      .from('ministeres')
+      .insert([
+        { 
+          nom, 
+          nom_court, 
+          ministre, 
+          description, 
+          slug,
+          est_actif: true
+        }
+      ])
+      .select()
+      .single()
 
-    return NextResponse.json({ success: true, data: result });
+    if (error) {
+      console.error('Error creating ministry:', error)
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Failed to create ministry',
+          details: error.message,
+          code: error.code
+        },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ success: true, data: ministry })
   } catch (error) {
+    console.error('Unexpected error in ministry creation:', error)
     return NextResponse.json(
-      { success: false, error: 'Failed to create ministry' },
+      { 
+        success: false, 
+        error: 'Failed to create ministry',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
-    );
+    )
   }
 } 

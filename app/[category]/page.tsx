@@ -1,4 +1,4 @@
-import { getServicesByCategory } from '@/lib/db'
+import { getServicesByCategory } from '@/lib/services'
 import { notFound } from 'next/navigation'
 import ServiceLink from '../components/ServiceLink'
 import Link from 'next/link'

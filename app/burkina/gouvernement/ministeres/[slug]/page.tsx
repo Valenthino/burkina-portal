@@ -1,8 +1,32 @@
-import { getMinistereBySlug } from '@/lib/db'
+import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import type { Ministere, MinistereService } from '@/lib/types'
 
-const ServiceLink = ({ service, ministereSlug }: { service: any, ministereSlug: string }) => {
+// Enable Incremental Static Regeneration with a revalidation period of 1 hour
+export const revalidate = 3600
+
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
+  
+  const { data: ministere } = await supabase
+    .from('ministeres')
+    .select('nom')
+    .eq('slug', params.slug)
+    .eq('est_actif', true)
+    .single()
+
+  if (!ministere) return { title: 'Ministère non trouvé' }
+  
+  return {
+    title: ministere.nom,
+    description: `Page officielle du ${ministere.nom} du Burkina Faso`
+  }
+}
+
+const ServiceLink = ({ service, ministereSlug }: { service: MinistereService, ministereSlug: string }) => {
   // For informational services, just render text
   if (service.route_type === 'info') {
     return (
@@ -55,22 +79,43 @@ const ServiceLink = ({ service, ministereSlug }: { service: any, ministereSlug: 
   )
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const ministere = await getMinistereBySlug(params.slug)
-  if (!ministere) return { title: 'Ministère non trouvé' }
-  
-  return {
-    title: ministere.nom,
-    description: `Page officielle du ${ministere.nom} du Burkina Faso`
-  }
-}
-
 export default async function MinisterePage({ params }: { params: { slug: string } }) {
-  const ministere = await getMinistereBySlug(params.slug)
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
   
-  if (!ministere) {
+  const { data: ministere, error } = await supabase
+    .from('ministeres')
+    .select(`
+      id,
+      nom,
+      description,
+      est_actif,
+      created_at,
+      updated_at,
+      slug,
+      missions:missions_ministere(
+        id,
+        description
+      ),
+      services:services_ministere(
+        id,
+        nom,
+        description,
+        type,
+        route_type,
+        external_url,
+        slug
+      )
+    `)
+    .eq('slug', params.slug)
+    .eq('est_actif', true)
+    .single()
+  
+  if (error || !ministere) {
     notFound()
   }
+
+  const typedMinistere = ministere as Ministere
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -84,19 +129,28 @@ export default async function MinisterePage({ params }: { params: { slug: string
           <li>/</li>
           <li><Link href="/burkina/gouvernement/ministeres" className="text-blue-600 hover:underline">Ministères</Link></li>
           <li>/</li>
-          <li className="text-gray-600">{ministere.nom}</li>
+          <li className="text-gray-600">{typedMinistere.nom}</li>
         </ol>
       </nav>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="p-8">
-          <h1 className="text-3xl font-bold mb-6">{ministere.nom}</h1>
+          <h1 className="text-3xl font-bold mb-6">{typedMinistere.nom}</h1>
+          
+          {typedMinistere.description && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-2">Description</h2>
+              <div className="prose max-w-none">
+                <p className="text-gray-600">{typedMinistere.description}</p>
+              </div>
+            </div>
+          )}
           
           <div className="grid md:grid-cols-2 gap-12">
             <div>
               <h2 className="text-xl font-semibold mb-4">Missions</h2>
               <ul className="space-y-3">
-                {ministere.missions.map((mission) => (
+                {typedMinistere.missions?.map((mission) => (
                   <li key={mission.id} className="flex items-start">
                     <span className="text-gray-400 mr-2">•</span>
                     <span>{mission.description}</span>
@@ -108,9 +162,9 @@ export default async function MinisterePage({ params }: { params: { slug: string
             <div>
               <h2 className="text-xl font-semibold mb-4">Services clés</h2>
               <ul className="space-y-3">
-                {ministere.services.map((service) => (
+                {typedMinistere.services?.map((service) => (
                   <li key={service.id}>
-                    <ServiceLink service={service} ministereSlug={ministere.slug} />
+                    <ServiceLink service={service} ministereSlug={typedMinistere.slug} />
                     {service.description && (
                       <p className="text-gray-600 text-sm mt-1 ml-6">
                         {service.description}
@@ -119,22 +173,6 @@ export default async function MinisterePage({ params }: { params: { slug: string
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
-
-          <div className="mt-12">
-            <h2 className="text-xl font-semibold mb-4">Contact</h2>
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <p className="font-medium mb-2">Adresse</p>
-                  <p className="text-gray-600">Ouagadougou, Burkina Faso</p>
-                </div>
-                <div>
-                  <p className="font-medium mb-2">Horaires</p>
-                  <p className="text-gray-600">Lundi - Vendredi: 07:30 - 16:00</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>

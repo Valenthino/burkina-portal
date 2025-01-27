@@ -1,4 +1,4 @@
-import { getServiceBySlug } from '@/lib/db'
+import { getServiceBySlug } from '@/lib/services'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 
