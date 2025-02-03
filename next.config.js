@@ -19,6 +19,8 @@ const nextConfig = {
       }
     }
   },
+  // Configure ISR with a reasonable timeout
+  staticPageGenerationTimeout: 120,
   images: {
     remotePatterns: [
       {

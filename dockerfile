@@ -2,7 +2,7 @@ FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-WORKDIR /app
+WORKDIR /burkina-portal
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
@@ -10,9 +10,10 @@ RUN npm ci
 
 # Rebuild the source code only when needed
 FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+WORKDIR /burkina-portal
+COPY --from=deps /burkina-portal/node_modules ./node_modules
 COPY . .
+COPY .env.docker .env
 
 # Set environment variables
 ARG NEXT_PUBLIC_SUPABASE_URL
@@ -35,7 +36,7 @@ RUN npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
-WORKDIR /app
+WORKDIR /burkina-portal
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -60,9 +61,9 @@ RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /burkina-portal/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /burkina-portal/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /burkina-portal/public ./public
 
 USER nextjs
 
