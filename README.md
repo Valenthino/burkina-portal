@@ -33,11 +33,17 @@ Le portail utilise une architecture en microservices, facilitant la scalabilité
 Modern, accessible government portal built with Next.js 14, focusing on performance and user experience. Inspired by Canada.ca and Gov.pl while maintaining unique African identity.
 
 ## Tech Stack
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Frontend**: Next.js 14, Tailwind CSS
 - **Backend**: Node.js, Express
-- **Database**: PostgreSQL through Supabase
+- **Database**: Supabase
 - **Testing**: TBD
-- **Infrastructure**: TBD
+- **Infrastructure**: Docker
 
 ## Core Features
 1. **Authentication System**
+2. **User Management**
+3. **Content Management**
+4. **Search and Navigation**
+5. **Responsive Design**
+6. **Performance Optimization**
+7. **Security Features**

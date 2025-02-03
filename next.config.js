@@ -20,13 +20,29 @@ const nextConfig = {
     }
   },
   images: {
-    domains: ['agxtgjnwcfacuisflbft.supabase.co'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**.supabase.co',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.presidencedufaso.bf',
+      },
+      {
+        protocol: 'https',
+        hostname: 'presidencedufaso.bf',
+      },
+      {
+        protocol: 'http',
+        hostname: 'www.presidencedufaso.bf',
+      },
+      {
+        protocol: 'http',
+        hostname: 'presidencedufaso.bf',
+      }
     ],
+    domains: ['www.presidencedufaso.bf', 'presidencedufaso.bf'],
   },
   // Optimize build output
   poweredByHeader: false,

@@ -59,7 +59,7 @@ export default function Header() {
               </div>
               <Link href="/actualites" className="nav-link hover:text-primary transition-colors">Actualités</Link>
               <Link 
-                href="/services/index-a-z" 
+                href="/index-a-z" 
                 className="btn-primary flex items-center text-sm whitespace-nowrap"
               >
                 {/* Bouton Index A-Z avec icône */}
@@ -98,7 +98,7 @@ export default function Header() {
                   Actualités
                 </Link>
                 <Link 
-                  href="/services/index-a-z" 
+                  href="/index-a-z" 
                   className="mx-4 btn-primary text-center flex items-center justify-center"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

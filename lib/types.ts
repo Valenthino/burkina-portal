@@ -62,4 +62,67 @@ export type MinistereMission = {
   id: number;
   description: string;
   ordre: number;
-}; 
+};
+
+export type Actualite = {
+    id: string;
+    titre: string;
+    contenu: string;
+    date_publication: string;
+    image_url: string | null;
+    source_url: string;
+    slug: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  content: string;
+  image_url: string | null;
+  source_url: string;
+  published_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Minister {
+    id: string;
+    name: string;
+    title: string;
+    ministry: string;
+    photo_url?: string;
+    bio?: string;
+    order: number;
+}
+
+export interface MenuLink {
+  title: string;
+  url: string;
+  description?: string;
+}
+
+export interface SubSection {
+  title: string;
+  links: MenuLink[];
+}
+
+export interface MenuItem {
+  title: string;
+  url: string;
+  description?: string;
+  subsections?: SubSection[];
+}
+
+export interface MegaMenuItem {
+  title: string;
+  sections: {
+    title: string;
+    links: MenuItem[];
+  }[];
+}
+
+export interface MegaMenu {
+  [key: string]: MegaMenuItem;
+} 

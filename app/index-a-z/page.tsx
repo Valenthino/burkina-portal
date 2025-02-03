@@ -6,10 +6,33 @@ interface IndexItem {
   title: string;
   href: string;
   category: string;
+  description?: string;
 }
 
 const indexItems: IndexItem[] = [
   // A
+  {
+    title: "Actes d'État Civil",
+    href: "/services/citoyens/etat-civil",
+    category: "Services aux Citoyens"
+  },
+  {
+    title: "Agréments sectoriels",
+    href: "/entreprises/licences/agrements",
+    category: "Services aux Entreprises",
+    description: "Obtention des agréments spécifiques par secteur d'activité"
+  },
+  {
+    title: "Aide Sociale",
+    href: "/services/citoyens/aide-sociale",
+    category: "Protection Sociale"
+  },
+  {
+    title: "Appels d'offres",
+    href: "/entreprises/marches-publics/appels-offres",
+    category: "Services aux Entreprises",
+    description: "Consultation des appels d'offres publics en cours"
+  },
   {
     title: "Arts et traditions",
     href: "/burkina/histoire-culture/arts",
@@ -21,11 +44,36 @@ const indexItems: IndexItem[] = [
     category: "Services de la Fonction Publique"
   },
   {
+    title: "Associations",
+    href: "/services/citoyens/associations",
+    category: "Vie Citoyenne"
+  },
+  {
+    title: "Assurance Maladie",
+    href: "/services/citoyens/assurance-maladie",
+    category: "Protection Sociale"
+  },
+  {
     title: "Avantages salariaux en CDD",
     href: "/emploi/reglementation-travail/contrats/avantages-salariaux-cdd",
     category: "Contrats de travail"
   },
   // C
+  {
+    title: "Carte Nationale d'Identité (CNIB)",
+    href: "/services/citoyens/cnib",
+    category: "Services aux Citoyens"
+  },
+  {
+    title: "Casier Judiciaire",
+    href: "/services/citoyens/casier-judiciaire",
+    category: "Services aux Citoyens"
+  },
+  {
+    title: "Certificat de Résidence",
+    href: "/services/citoyens/certificat-residence",
+    category: "Services aux Citoyens"
+  },
   {
     title: "Circuits touristiques",
     href: "/burkina/decouvrir/circuits",
@@ -47,6 +95,11 @@ const indexItems: IndexItem[] = [
     category: "Administration Publique"
   },
   {
+    title: "Consulats et Ambassades",
+    href: "/services/international/consulats",
+    category: "Services Internationaux"
+  },
+  {
     title: "Contrat de travail - Guide complet",
     href: "/emploi/reglementation-travail/contrats",
     category: "Contrats de travail"
@@ -56,12 +109,88 @@ const indexItems: IndexItem[] = [
     href: "/burkina/histoire-culture",
     category: "Culture et Patrimoine"
   },
-  // D
+  // Creation d'Entreprise
   {
-    title: "Documents administratifs",
-    href: "/fonction-publique/services/documents",
-    category: "Services de la Fonction Publique"
+    title: "Création d'entreprise - Guide",
+    href: "/entreprises/creation",
+    category: "Création d'Entreprise",
+    description: "Guide complet des étapes pour créer votre entreprise"
   },
+  {
+    title: "Documents requis",
+    href: "/entreprises/creation/documents",
+    category: "Création d'Entreprise",
+    description: "Liste complète des documents nécessaires pour la création"
+  },
+  {
+    title: "Procédures de création",
+    href: "/entreprises/creation/procedures",
+    category: "Création d'Entreprise",
+    description: "Guide détaillé des procédures administratives"
+  },
+  {
+    title: "Statut juridique",
+    href: "/entreprises/creation/statut",
+    category: "Création d'Entreprise",
+    description: "Choix de la forme juridique de l'entreprise"
+  },
+  {
+    title: "Financement initial",
+    href: "/entreprises/creation/financement",
+    category: "Création d'Entreprise",
+    description: "Options de financement pour le démarrage"
+  },
+  // Fiscalité et Finances
+  {
+    title: "Guide fiscal",
+    href: "/entreprises/fiscalite",
+    category: "Fiscalité et Finances",
+    description: "Guide complet de la fiscalité des entreprises"
+  },
+  {
+    title: "TVA",
+    href: "/entreprises/fiscalite/tva",
+    category: "Fiscalité et Finances",
+    description: "Gestion et déclaration de la TVA"
+  },
+  {
+    title: "Déclarations fiscales",
+    href: "/entreprises/fiscalite/declarations",
+    category: "Fiscalité et Finances",
+    description: "Procédures de déclaration des impôts et taxes"
+  },
+  {
+    title: "Exonérations fiscales",
+    href: "/entreprises/fiscalite/exonerations",
+    category: "Fiscalité et Finances",
+    description: "Guide des avantages fiscaux disponibles"
+  },
+  // Commerce et Marchés
+  {
+    title: "Commerce international",
+    href: "/entreprises/commerce-international",
+    category: "Commerce et Marchés",
+    description: "Guide complet import-export"
+  },
+  {
+    title: "Marchés publics",
+    href: "/entreprises/marches-publics",
+    category: "Commerce et Marchés",
+    description: "Guide de participation aux marchés publics"
+  },
+  {
+    title: "Appels d'offres",
+    href: "/entreprises/marches-publics/appels-offres",
+    category: "Commerce et Marchés",
+    description: "Consultation des appels d'offres en cours"
+  },
+  {
+    title: "Licences commerciales",
+    href: "/entreprises/licences/commerce",
+    category: "Commerce et Marchés",
+    description: "Guide des autorisations commerciales"
+  },
+  // D
   {
     title: "Droits collectifs en CDD",
     href: "/emploi/reglementation-travail/contrats/droits-collectifs-cdd",
@@ -72,6 +201,11 @@ const indexItems: IndexItem[] = [
     title: "Écoles de formation",
     href: "/fonction-publique/formation/ecoles",
     category: "Formation Publique"
+  },
+  {
+    title: "Élections",
+    href: "/services/citoyens/elections",
+    category: "Vie Citoyenne"
   },
   {
     title: "Équipements collectifs en CDD",
@@ -88,6 +222,12 @@ const indexItems: IndexItem[] = [
     href: "/fonction-publique/formation/examens",
     category: "Formation Publique"
   },
+  {
+    title: "Exportation",
+    href: "/entreprises/commerce-international/export",
+    category: "Services aux Entreprises",
+    description: "Guide des procédures d'exportation"
+  },
   // F
   {
     title: "Formation continue",
@@ -98,6 +238,18 @@ const indexItems: IndexItem[] = [
     title: "Formation professionnelle",
     href: "/emploi/formation-professionnelle",
     category: "Formation"
+  },
+  {
+    title: "Financement",
+    href: "/entreprises/creation/financement",
+    category: "Services aux Entreprises",
+    description: "Options de financement pour votre entreprise"
+  },
+  {
+    title: "Fiscalité",
+    href: "/entreprises/fiscalite",
+    category: "Services aux Entreprises",
+    description: "Guide complet de la fiscalité des entreprises"
   },
   // H
   {
@@ -115,13 +267,36 @@ const indexItems: IndexItem[] = [
     href: "/burkina/histoire-culture/histoire",
     category: "Culture et Patrimoine"
   },
+  // I
+  {
+    title: "Importation",
+    href: "/entreprises/commerce-international/import",
+    category: "Services aux Entreprises",
+    description: "Guide des procédures d'importation"
+  },
   // L
   {
     title: "Langues nationales",
     href: "/burkina/histoire-culture/langues",
     category: "Culture et Patrimoine"
   },
+  {
+    title: "Légalisation de Documents",
+    href: "/services/citoyens/legalisation",
+    category: "Services aux Citoyens"
+  },
+  {
+    title: "Licences et permis",
+    href: "/entreprises/licences",
+    category: "Services aux Entreprises",
+    description: "Guide complet des autorisations d'exercice"
+  },
   // M
+  {
+    title: "Ministères",
+    href: "/gouvernement/ministeres",
+    category: "Gouvernement"
+  },
   {
     title: "Mutations",
     href: "/fonction-publique/carriere/mutations",
@@ -129,9 +304,25 @@ const indexItems: IndexItem[] = [
   },
   // P
   {
+    title: "Participation Citoyenne",
+    href: "/services/citoyens/participation",
+    category: "Vie Citoyenne"
+  },
+  {
+    title: "Passeport",
+    href: "/services/citoyens/passeport",
+    category: "Services aux Citoyens"
+  },
+  {
     title: "Patrimoine culturel",
     href: "/burkina/histoire-culture/patrimoine",
     category: "Culture et Patrimoine"
+  },
+  {
+    title: "Permis spéciaux",
+    href: "/entreprises/licences/speciaux",
+    category: "Services aux Entreprises",
+    description: "Guide des autorisations spéciales"
   },
   // R
   {
@@ -149,7 +340,30 @@ const indexItems: IndexItem[] = [
     href: "/fonction-publique/administration/retraite",
     category: "Administration Publique"
   },
+  {
+    title: "Régimes douaniers",
+    href: "/entreprises/commerce-international/regimes",
+    category: "Services aux Entreprises",
+    description: "Guide des régimes douaniers spéciaux"
+  },
+  {
+    title: "Réglementation des marchés publics",
+    href: "/entreprises/marches-publics/reglementation",
+    category: "Services aux Entreprises",
+    description: "Cadre légal des marchés publics"
+  },
   // S
+  {
+    title: "Sécurité Sociale",
+    href: "/services/citoyens/securite-sociale",
+    category: "Protection Sociale"
+  },
+  {
+    title: "Secteurs prioritaires",
+    href: "/entreprises/investissement/secteurs",
+    category: "Services aux Entreprises",
+    description: "Secteurs prioritaires pour l'investissement"
+  },
   {
     title: "Sites historiques",
     href: "/burkina/histoire-culture/sites",
@@ -170,6 +384,12 @@ const indexItems: IndexItem[] = [
     href: "/fonction-publique/administration/statut",
     category: "Administration Publique"
   },
+  {
+    title: "TVA",
+    href: "/entreprises/fiscalite/tva",
+    category: "Services aux Entreprises",
+    description: "Guide de la Taxe sur la Valeur Ajoutée"
+  },
   // T
   {
     title: "Temps de travail en CDD",
@@ -180,6 +400,64 @@ const indexItems: IndexItem[] = [
     title: "Tourisme au Burkina Faso",
     href: "/burkina/decouvrir/tourisme",
     category: "Tourisme"
+  },
+  {
+    title: "Hôpitaux et Centres de Santé",
+    href: "/services/sante/hopitaux-centres",
+    category: "Santé"
+  },
+  {
+    title: "Maladies Chroniques",
+    href: "/services/sante/maladies-chroniques",
+    category: "Santé"
+  },
+  {
+    title: "Pharmacies",
+    href: "/services/sante/pharmacies",
+    category: "Santé"
+  },
+  {
+    title: "Prévention et Hygiène",
+    href: "/services/sante/prevention-hygiene",
+    category: "Santé"
+  },
+  {
+    title: "Santé Maternelle et Infantile",
+    href: "/services/sante/maternelle-infantile",
+    category: "Santé"
+  },
+  {
+    title: "Santé Mentale",
+    href: "/services/sante/sante-mentale",
+    category: "Santé"
+  },
+  {
+    title: "Urgences Médicales",
+    href: "/services/sante/urgences",
+    category: "Santé"
+  },
+  {
+    title: "Vaccination",
+    href: "/services/sante/vaccination",
+    category: "Santé"
+  },
+  {
+    title: "Incitations à l'investissement",
+    href: "/entreprises/investissement/incitations",
+    category: "Services aux Entreprises",
+    description: "Avantages accordés aux investisseurs"
+  },
+  {
+    title: "Investissement",
+    href: "/entreprises/investissement",
+    category: "Services aux Entreprises",
+    description: "Guide complet pour investir au Burkina Faso"
+  },
+  // V
+  {
+    title: "Visas",
+    href: "/services/international/visas",
+    category: "Services Internationaux"
   }
 ];
 
@@ -199,7 +477,7 @@ function groupByFirstLetter(items: IndexItem[]) {
 export default function IndexAZPage() {
   const breadcrumbItems = [
     { label: 'Accueil', href: '/' },
-    { label: 'Index A-Z', href: '/services/index-a-z' }
+    { label: 'Index A-Z', href: '/index-a-z' }
   ];
 
   const groupedItems = groupByFirstLetter(indexItems);

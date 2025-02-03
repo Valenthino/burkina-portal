@@ -2,35 +2,9 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { type MegaMenu } from '@/types';
+import { type MegaMenu, type MegaMenuItem, type MenuItem, type MenuLink, type SubSection } from '@/lib/types';
 
-interface MenuLink {
-  title: string;
-  url: string;
-  description?: string;
-}
-
-interface SubSection {
-  title: string;
-  links: MenuLink[];
-}
-
-interface MenuItem {
-  title: string;
-  url: string;
-  description?: string;
-  subsections?: SubSection[];
-}
-
-interface MegaMenuItem {
-  title: string;
-  sections: {
-    title: string;
-    links: MenuItem[];
-  }[];
-}
-
-const megaMenu: { [key: string]: MegaMenuItem } = {
+const megaMenu: MegaMenu = {
   citoyens: {
     title: "Citoyens",
     sections: [
@@ -369,6 +343,11 @@ const megaMenu: { [key: string]: MegaMenuItem } = {
             title: "Présidence", 
             url: "/burkina/gouvernement/presidence",
             description: "Institution présidentielle et cabinet"
+          },
+          {
+            title: "Ministres",
+            url: "/burkina/gouvernement/ministres",
+            description: "Liste des membres du gouvernement"
           },
           { 
             title: "Ministères", 

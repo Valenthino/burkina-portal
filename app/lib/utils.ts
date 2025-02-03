@@ -1,3 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
 interface Service {
   category: string;
   slug: string;
@@ -19,4 +22,8 @@ export function formatServiceUrl(service: Service): string {
   parts.push(service.slug);
   
   return '/' + parts.join('/');
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 } 
