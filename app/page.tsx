@@ -26,6 +26,7 @@ import {
   RiTruckLine
 } from '@remixicon/react';
 import Image from 'next/image';
+import ServiceCategories from './components/ServiceCategories';
 
 // Icons credit: Remix Icons (https://remixicon.com/) - MIT License
 
@@ -554,106 +555,11 @@ export default function HomePage() {
       </section>
 
       {/* Services Navigation */}
-      <section className="bg-white shadow-md">
-        <div className="container mx-auto">
-          <div className="flex justify-center border-b">
-            <button
-              onClick={() => setActiveTab('plusDemandes')}
-              className={`flex items-center px-6 py-4 text-lg font-medium ${
-                activeTab === 'plusDemandes'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
-            >
-              <RiStarLine className="mr-2 w-5 h-5" />
-              Services les plus demandés
-            </button>
-            <button
-              onClick={() => setActiveTab('citoyens')}
-              className={`flex items-center px-6 py-4 text-lg font-medium ${
-                activeTab === 'citoyens'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
-            >
-              <RiUser3Line className="mr-2 w-5 h-5" />
-              Pour le citoyen
-            </button>
-            <button
-              onClick={() => setActiveTab('entreprises')}
-              className={`flex items-center px-6 py-4 text-lg font-medium ${
-                activeTab === 'entreprises'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
-            >
-              <RiBuilding2Line className="mr-2 w-5 h-5" />
-              Pour l'entrepreneur
-            </button>
-            <button
-              onClick={() => setActiveTab('administration')}
-              className={`flex items-center px-6 py-4 text-lg font-medium ${
-                activeTab === 'administration'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
-            >
-              <RiGovernmentLine className="mr-2 w-5 h-5" />
-              Administration
-            </button>
-            <button
-              onClick={() => setActiveTab('international')}
-              className={`flex items-center px-6 py-4 text-lg font-medium ${
-                activeTab === 'international'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-gray-600 hover:text-primary'
-              }`}
-            >
-              <RiGlobalLine className="mr-2 w-5 h-5" />
-              International
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Content */}
-      <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {serviceCategories[activeTab].slice(0, 15).map((service, index) => {
-                const IconComponent = service.icon as React.ComponentType<IconProps>;
-                return (
-                  <Link
-                    key={index}
-                    href={service.url}
-                    className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow group"
-                  >
-                    <div className="flex items-start space-x-4">
-                      <IconComponent className="w-8 h-8 text-primary flex-shrink-0" />
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary mb-2">
-                            {service.title}
-                          </h3>
-                          {service.badge && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                              {service.badge}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-gray-600 text-sm line-clamp-2">
-                          {service.description}
-                        </p>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
+      <ServiceCategories 
+        serviceCategories={serviceCategories}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
       {/* Quick Access */}
       <section className="py-16 bg-white">
@@ -702,7 +608,7 @@ export default function HomePage() {
                 </li>
                 <li>
                   <Link href="#" className="text-primary hover:underline">
-                    Contacts d'urgence
+                    Annuaire des services
                   </Link>
                 </li>
               </ul>

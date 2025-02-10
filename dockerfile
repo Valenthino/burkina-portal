@@ -11,26 +11,24 @@ RUN npm ci
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /burkina-portal
-COPY --from=deps /burkina-portal/node_modules ./node_modules
-COPY . .
-COPY .env.docker .env
 
-# Set environment variables
+# Define build arguments
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ARG SUPABASE_SERVICE_ROLE_KEY
 ARG DATABASE_URL
 
-ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
-ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
-ENV SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY
-ENV DATABASE_URL=$DATABASE_URL
-ENV NEXT_TELEMETRY_DISABLED 1
+# Set environment variables from build arguments
+ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+ENV SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+ENV DATABASE_URL=${DATABASE_URL}
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED 1
+COPY --from=deps /burkina-portal/node_modules ./node_modules
+COPY . .
+COPY .env.docker .env
 
 RUN npm run build
 
@@ -38,19 +36,21 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /burkina-portal
 
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-# Pass through build args to runner stage
+# Define runtime arguments
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ARG SUPABASE_SERVICE_ROLE_KEY
 ARG DATABASE_URL
 
-ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
-ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
-ENV SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY
-ENV DATABASE_URL=$DATABASE_URL
+# Set runtime environment variables
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+ENV SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+ENV DATABASE_URL=${DATABASE_URL}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -66,10 +66,6 @@ COPY --from=builder --chown=nextjs:nodejs /burkina-portal/.next/static ./.next/s
 COPY --from=builder --chown=nextjs:nodejs /burkina-portal/public ./public
 
 USER nextjs
-
-# Set runtime environment variables
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
 
 # Expose the port the app will run on
 EXPOSE 3000

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { type MegaMenu, type MegaMenuItem, type MenuItem, type MenuLink, type SubSection } from '@/lib/types';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 const megaMenu: MegaMenu = {
   citoyens: {
@@ -510,13 +511,37 @@ interface MainMenuProps {
 }
 
 export default function MainMenu({ activeMenu, onMenuChange }: MainMenuProps) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeMobileSection, setActiveMobileSection] = useState<string | null>(null);
+  
   const mainMenuItems = Object.entries(megaMenu).filter(
     ([key]) => !['agriculture', 'justice', 'sante'].includes(key)
   );
 
   return (
-    <nav className="border-t border-gray-200 bg-background">
+    <nav className="border-t border-gray-200 bg-background relative">
       <div className="container mx-auto">
+        {/* Mobile Menu Button */}
+        <div className="lg:hidden">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-4 flex items-center justify-between w-full text-foreground-dark"
+            aria-expanded={mobileMenuOpen}
+          >
+            <span className="font-medium">Menu</span>
+            <svg
+              className={`w-5 h-5 transition-transform duration-200 ${
+                mobileMenuOpen ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+
         {/* Desktop Menu */}
         <div className="hidden lg:block">
           <ul className="flex justify-center" role="menubar">
@@ -750,79 +775,96 @@ export default function MainMenu({ activeMenu, onMenuChange }: MainMenuProps) {
         </div>
 
         {/* Mobile Menu */}
-        <div className="lg:hidden">
-          {Object.entries(megaMenu).map(([key, menu]) => (
-            <div key={key} className="border-t border-gray-100">
+        <div 
+          className={`lg:hidden fixed inset-0 bg-white z-50 transition-transform duration-300 ease-in-out transform ${
+            mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="h-full flex flex-col">
+            {/* Mobile Menu Header */}
+            <div className="border-b border-gray-200 p-4 flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-foreground-dark">Menu</h2>
               <button
-                className="w-full py-4 px-6 flex justify-between items-center text-left"
-                onClick={() => onMenuChange(activeMenu === key ? null : key)}
-                aria-expanded={activeMenu === key}
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 text-gray-500 hover:text-gray-700"
               >
-                <span className="font-medium text-gray-900">{menu.title}</span>
-                <svg
-                  className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
-                    activeMenu === key ? 'rotate-180' : ''
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-
-              {activeMenu === key && (
-                <div className="px-6 pb-4">
-                  {menu.sections.map((section, idx) => (
-                    <div key={idx} className="mb-6 last:mb-0">
-                      <h3 className="font-medium text-gray-900 mb-3 pb-2 border-b">
-                        {section.title}
-                      </h3>
-                      <ul className="space-y-3">
-                        {section.links.map((link, linkIdx) => (
-                          <li key={linkIdx}>
-                            <Link
-                              href={link.url}
-                              className="block hover:bg-primary/[0.06] active:bg-primary/[0.08] rounded-lg p-4 transition-all duration-200 relative group/link"
-                            >
-                              <div className="flex items-start justify-between gap-4">
-                                <div>
-                                  <span className="text-gray-900 font-medium group-hover/link:text-primary transition-colors">
-                                    {link.title}
-                                  </span>
-                                  {link.description && (
-                                    <span className="text-sm text-gray-600 block mt-1 group-hover/link:text-gray-700">
-                                      {link.description}
-                                    </span>
-                                  )}
-                                </div>
-                                {(link.title === "Carte d'identité" || 
-                                  link.title === "Passeport" ||
-                                  link.title === "Couverture santé" ||
-                                  link.title === "Concours de la fonction publique") && (
-                                  <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                    Nouveau
-                                  </span>
-                                )}
-                                {(link.title === "Assurance maladie" ||
-                                  link.title === "Formation continue" ||
-                                  link.title === "Marchés publics") && (
-                                  <span className="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    En cours
-                                  </span>
-                                )}
-                              </div>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
-          ))}
+
+            {/* Mobile Menu Content */}
+            <div className="flex-1 overflow-y-auto">
+              {mainMenuItems.map(([key, item]) => (
+                <div key={key} className="border-b border-gray-100">
+                  <button
+                    className="w-full py-4 px-6 flex justify-between items-center text-left"
+                    onClick={() => setActiveMobileSection(activeMobileSection === key ? null : key)}
+                    aria-expanded={activeMobileSection === key}
+                  >
+                    <span className="font-medium text-foreground-dark">{item.title}</span>
+                    <ChevronRightIcon 
+                      className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${
+                        activeMobileSection === key ? 'rotate-90' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {activeMobileSection === key && (
+                    <div className="bg-gray-50 px-6 py-4">
+                      {item.sections.map((section, idx) => (
+                        <div key={idx} className="mb-6 last:mb-0">
+                          <h3 className="font-medium text-sm text-gray-500 uppercase tracking-wider mb-3">
+                            {section.title}
+                          </h3>
+                          <ul className="space-y-2">
+                            {section.links.map((link, linkIdx) => (
+                              <li key={linkIdx}>
+                                <Link
+                                  href={link.url}
+                                  className="block py-2 text-foreground-dark hover:text-primary transition-colors"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <span>{link.title}</span>
+                                    {(link.title === "Carte d'identité" || 
+                                      link.title === "Passeport" ||
+                                      link.title === "Couverture santé" ||
+                                      link.title === "Concours de la fonction publique") && (
+                                      <span className="ml-2 px-2 py-0.5 text-xs bg-primary/10 text-primary rounded-full">
+                                        Nouveau
+                                      </span>
+                                    )}
+                                    {(link.title === "Assurance maladie" ||
+                                      link.title === "Formation continue" ||
+                                      link.title === "Marchés publics") && (
+                                      <span className="ml-2 px-2 py-0.5 text-xs bg-yellow-100 text-yellow-800 rounded-full">
+                                        En cours
+                                      </span>
+                                    )}
+                                  </div>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && (
+          <div 
+            className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
       </div>
     </nav>
   );
