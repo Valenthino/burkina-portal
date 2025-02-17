@@ -35,6 +35,7 @@ import { PassportFormProvider } from '@/lib/contexts/PassportFormContext';
 import { AutoSaveStatus } from '@/components/passport/AutoSaveStatus';
 import { PersonalInfoSection } from '@/components/passport/PersonalInfoSection';
 import { Toaster } from '@/components/ui/toaster';
+import { LoadingPage } from '@/components/ui/loading-page';
 
 const formSchema = z.object({
   type: z.enum(['ordinaire', 'service', 'diplomatique'], {
@@ -72,7 +73,7 @@ export default function PassportApplicationPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const searchParams = useSearchParams();
-  const applicationId = searchParams.get('id');
+  const applicationId = searchParams?.get('id') || undefined;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -250,12 +251,15 @@ export default function PassportApplicationPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      setError(null);
+
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
         setError('Veuillez vous connecter pour soumettre votre demande');
         return;
       }
 
+      // Check for required files
       if (!photoUrl) {
         setError('La photo d\'identité est requise');
         return;
@@ -266,41 +270,65 @@ export default function PassportApplicationPage() {
         return;
       }
 
-      const applicationId = `PASS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      
-      const { error } = await supabase
+      // Validate all form fields
+      const validationResult = formSchema.safeParse(values);
+      if (!validationResult.success) {
+        const errors = validationResult.error.errors;
+        setError(`Veuillez corriger les erreurs suivantes : ${errors.map(e => e.message).join(', ')}`);
+        return;
+      }
+
+      const newApplicationId = `PASS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+      // Format the form data
+      const formattedData = {
+        application_id: newApplicationId,
+        type: values.type,
+        first_name: values.firstName,
+        last_name: values.lastName,
+        birth_date: values.birthDate,
+        birth_place: values.birthPlace,
+        nationality: values.nationality,
+        gender: values.gender,
+        profession: values.profession,
+        address: values.address,
+        phone: values.phone,
+        email: values.email,
+        father_name: values.fatherName,
+        mother_name: values.motherName,
+        emergency_contact: values.emergencyContact,
+        height: values.height,
+        eye_color: values.eyeColor,
+        marital_status: values.maritalStatus,
+        photo_url: photoUrl,
+        signature_url: signatureUrl,
+        form_data: values,
+        status: 'pending',
+        user_id: user.id,
+        submitted_at: new Date().toISOString()
+      };
+
+      const { error: submitError } = await supabase
         .from('passport_applications')
-        .insert({
-          application_id: applicationId,
-          user_id: user.id,
-          status: 'pending',
-          type: values.type,
-          first_name: values.firstName,
-          last_name: values.lastName,
-          birth_date: values.birthDate,
-          birth_place: values.birthPlace,
-          nationality: values.nationality,
-          gender: values.gender,
-          profession: values.profession,
-          address: values.address,
-          phone: values.phone,
-          email: values.email,
-          father_name: values.fatherName,
-          mother_name: values.motherName,
-          emergency_contact: values.emergencyContact,
-          height: values.height,
-          eye_color: values.eyeColor,
-          marital_status: values.maritalStatus,
-          photo_url: photoUrl,
-          signature_url: signatureUrl
-        });
+        .insert(formattedData);
 
-      if (error) throw error;
+      if (submitError) {
+        console.error('Database error:', submitError);
+        setError(`Erreur lors de la soumission : ${submitError.message}`);
+        return;
+      }
 
-      router.push(`/services/citoyens/passeport/success?id=${applicationId}`);
+      // Delete any existing drafts for this user
+      await supabase
+        .from('passport_applications')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('status', 'draft');
+
+      router.push('/services/citoyens/passeport/success');
     } catch (error) {
       console.error('Error submitting application:', error);
-      setError('Erreur lors de la soumission de la demande');
+      setError('Erreur lors de la soumission de la demande. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
@@ -363,16 +391,12 @@ export default function PassportApplicationPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <LoadingPage />;
   }
 
   return (
     <PassportFormProvider
-      applicationId={applicationId || undefined}
+      applicationId={applicationId}
       type="new"
     >
       <div className="min-h-screen bg-gray-50">
@@ -762,8 +786,18 @@ export default function PassportApplicationPage() {
               </Button>
 
               <Button
-                onClick={form.handleSubmit(onSubmit)}
-                disabled={loading || progress < 100}
+                onClick={async () => {
+                  const isValid = await form.trigger();
+                  if (isValid) {
+                    form.handleSubmit(onSubmit)();
+                  } else {
+                    const errors = Object.values(form.formState.errors);
+                    if (errors.length > 0) {
+                      setError(`Veuillez corriger les erreurs suivantes : ${errors.map(e => e.message).join(', ')}`);
+                    }
+                  }
+                }}
+                disabled={loading}
                 className="bg-[#1a5653] hover:bg-[#134240] text-white"
               >
                 {loading ? 'Envoi en cours...' : 'Soumettre la demande'}

@@ -36,6 +36,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LoadingPage } from '@/components/ui/loading-page';
 
 interface PasseportApplication {
   id: string;
@@ -148,12 +149,94 @@ export default function TableauDeBordPasseport() {
     );
   }
 
+  const handlePrint = async (application: PasseportApplication) => {
+    try {
+      setLoading(true);
+      // Generate PDF content
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Demande de Passeport #${application.application_id}</title>
+              <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .header { text-align: center; margin-bottom: 30px; }
+                .content { margin-bottom: 20px; }
+                .field { margin-bottom: 10px; }
+                .label { font-weight: bold; }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>Demande de Passeport</h1>
+                <p>N° ${application.application_id}</p>
+              </div>
+              <div class="content">
+                <div class="field">
+                  <span class="label">Nom:</span> ${application.last_name}
+                </div>
+                <div class="field">
+                  <span class="label">Prénom(s):</span> ${application.first_name}
+                </div>
+                <div class="field">
+                  <span class="label">Date de soumission:</span> ${new Date(application.created_at).toLocaleDateString('fr-FR')}
+                </div>
+                <div class="field">
+                  <span class="label">Statut:</span> ${getStatusBadge(application.status)}
+                </div>
+              </div>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    } catch (error) {
+      console.error('Error printing:', error);
+      setError('Erreur lors de l\'impression');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownloadReceipt = async (application: PasseportApplication) => {
+    try {
+      setLoading(true);
+      // Generate receipt content
+      const receiptContent = `
+        RÉCÉPISSÉ DE DEMANDE DE PASSEPORT
+        
+        N° de demande: ${application.application_id}
+        Date: ${new Date(application.created_at).toLocaleDateString('fr-FR')}
+        Nom: ${application.last_name}
+        Prénom(s): ${application.first_name}
+        Statut: ${application.status}
+        
+        Ce document fait office de récépissé pour votre demande de passeport.
+        Veuillez le conserver précieusement et le présenter lors de vos démarches.
+      `;
+
+      // Create blob and download
+      const blob = new Blob([receiptContent], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `recepisse-${application.application_id}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading receipt:', error);
+      setError('Erreur lors du téléchargement du récépissé');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <LoadingPage />;
   }
 
   const activeApplication = applications.find(app => 
@@ -359,23 +442,70 @@ export default function TableauDeBordPasseport() {
                                 Demande #{application.application_id}
                               </p>
                               <p className="text-sm text-gray-500">
-                                Soumise le {new Date(application.created_at).toLocaleDateString('fr-FR')}
+                                {application.status === 'draft' ? 'Dernière modification' : 'Soumise'} le {new Date(application.created_at).toLocaleDateString('fr-FR')}
                               </p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" className="text-gray-700 hover:text-gray-900">
-                                <Printer className="h-4 w-4 mr-2" />
-                                Imprimer
-                              </Button>
-                              <Button variant="outline" size="sm" className="text-gray-700 hover:text-gray-900">
-                                <Download className="h-4 w-4 mr-2" />
-                                Récépissé
-                              </Button>
-                              <Link href={`/services/citoyens/passeport/demandes/${application.application_id}`}>
-                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                                  Voir les détails
-                                </Button>
-                              </Link>
+                              {application.status === 'draft' ? (
+                                <>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-gray-700 hover:text-gray-900"
+                                    onClick={() => router.push(`/services/citoyens/passeport/demande?id=${application.application_id}`)}
+                                  >
+                                    <FileText className="h-4 w-4 mr-2" />
+                                    Continuer
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={async () => {
+                                      if (confirm('Êtes-vous sûr de vouloir supprimer ce brouillon ?')) {
+                                        const { error } = await supabase
+                                          .from('passport_applications')
+                                          .delete()
+                                          .eq('application_id', application.application_id);
+                                        
+                                        if (!error) {
+                                          setApplications(apps => apps.filter(app => app.application_id !== application.application_id));
+                                        }
+                                      }
+                                    }}
+                                  >
+                                    Supprimer
+                                  </Button>
+                                </>
+                              ) : (
+                                <>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-gray-700 hover:text-gray-900"
+                                    onClick={() => handlePrint(application)}
+                                  >
+                                    <Printer className="h-4 w-4 mr-2" />
+                                    Imprimer
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-gray-700 hover:text-gray-900"
+                                    onClick={() => handleDownloadReceipt(application)}
+                                  >
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Récépissé
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    onClick={() => router.push(`/services/citoyens/passeport/demandes/${application.application_id}`)}
+                                  >
+                                    Voir les détails
+                                  </Button>
+                                </>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -403,19 +533,70 @@ export default function TableauDeBordPasseport() {
                                 Demande #{application.application_id}
                               </p>
                               <p className="text-sm text-gray-500">
-                                Soumise le {new Date(application.created_at).toLocaleDateString('fr-FR')}
+                                {application.status === 'draft' ? 'Dernière modification' : 'Soumise'} le {new Date(application.created_at).toLocaleDateString('fr-FR')}
                               </p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" className="text-gray-700 hover:text-gray-900">
-                                <Printer className="h-4 w-4 mr-2" />
-                                Imprimer
-                              </Button>
-                              <Link href={`/services/citoyens/passeport/demandes/${application.application_id}`}>
-                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                                  Voir les détails
-                                </Button>
-                              </Link>
+                              {application.status === 'draft' ? (
+                                <>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-gray-700 hover:text-gray-900"
+                                    onClick={() => router.push(`/services/citoyens/passeport/demande?id=${application.application_id}`)}
+                                  >
+                                    <FileText className="h-4 w-4 mr-2" />
+                                    Continuer
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={async () => {
+                                      if (confirm('Êtes-vous sûr de vouloir supprimer ce brouillon ?')) {
+                                        const { error } = await supabase
+                                          .from('passport_applications')
+                                          .delete()
+                                          .eq('application_id', application.application_id);
+                                        
+                                        if (!error) {
+                                          setApplications(apps => apps.filter(app => app.application_id !== application.application_id));
+                                        }
+                                      }
+                                    }}
+                                  >
+                                    Supprimer
+                                  </Button>
+                                </>
+                              ) : (
+                                <>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-gray-700 hover:text-gray-900"
+                                    onClick={() => handlePrint(application)}
+                                  >
+                                    <Printer className="h-4 w-4 mr-2" />
+                                    Imprimer
+                                  </Button>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-gray-700 hover:text-gray-900"
+                                    onClick={() => handleDownloadReceipt(application)}
+                                  >
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Récépissé
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    onClick={() => router.push(`/services/citoyens/passeport/demandes/${application.application_id}`)}
+                                  >
+                                    Voir les détails
+                                  </Button>
+                                </>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -446,15 +627,31 @@ export default function TableauDeBordPasseport() {
                               </p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" className="text-gray-700 hover:text-gray-900">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="text-gray-700 hover:text-gray-900"
+                                onClick={() => handlePrint(application)}
+                              >
+                                <Printer className="h-4 w-4 mr-2" />
+                                Imprimer
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="text-gray-700 hover:text-gray-900"
+                                onClick={() => handleDownloadReceipt(application)}
+                              >
                                 <Download className="h-4 w-4 mr-2" />
                                 Attestation
                               </Button>
-                              <Link href={`/services/citoyens/passeport/demandes/${application.application_id}`}>
-                                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                                  Voir les détails
-                                </Button>
-                              </Link>
+                              <Button 
+                                size="sm" 
+                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                                onClick={() => router.push(`/services/citoyens/passeport/demandes/${application.application_id}`)}
+                              >
+                                Voir les détails
+                              </Button>
                             </div>
                           </div>
                         ))}

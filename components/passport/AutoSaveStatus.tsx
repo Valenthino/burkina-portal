@@ -11,7 +11,7 @@ export function AutoSaveStatus() {
       <div className="flex items-center space-x-2">
         {isSaving ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+            <Loader2 className="h-4 w-4 animate-spin text-[#1a5653]" />
             <span className="text-sm text-gray-600">Sauvegarde en cours...</span>
           </>
         ) : lastSavedAt ? (
@@ -33,7 +33,7 @@ export function AutoSaveStatus() {
       <div className="flex items-center space-x-2">
         <div className="h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-green-500 transition-all duration-300"
+            className="h-full bg-[#1a5653] transition-all duration-300"
             style={{ width: `${completionPercentage}%` }}
           />
         </div>

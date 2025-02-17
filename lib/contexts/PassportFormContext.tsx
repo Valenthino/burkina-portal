@@ -3,10 +3,12 @@ import { useAutoSave } from '@/lib/hooks/useAutoSave';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
+// Interface pour les données du formulaire de passeport
 interface PassportFormData {
   [key: string]: any;
 }
 
+// Interface définissant les fonctionnalités du contexte
 interface PassportFormContextType {
   formData: PassportFormData;
   updateFormField: (field: string, value: any) => void;
@@ -17,8 +19,10 @@ interface PassportFormContextType {
   lastSavedAt: Date | null;
 }
 
+// Création du contexte avec une valeur par défaut undefined
 const PassportFormContext = createContext<PassportFormContextType | undefined>(undefined);
 
+// Props du composant Provider
 interface PassportFormProviderProps {
   children: React.ReactNode;
   applicationId?: string;
@@ -26,6 +30,7 @@ interface PassportFormProviderProps {
 }
 
 export function PassportFormProvider({ children, applicationId, type }: PassportFormProviderProps) {
+  // États du formulaire
   const [formData, setFormData] = useState<PassportFormData>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,7 +39,7 @@ export function PassportFormProvider({ children, applicationId, type }: Passport
   const { toast } = useToast();
   const supabase = createClient();
 
-  // Initialize auto-save
+  // Configuration de la sauvegarde automatique
   const { hasUnsavedChanges } = useAutoSave({
     formData,
     applicationId: applicationId || null,
@@ -43,8 +48,8 @@ export function PassportFormProvider({ children, applicationId, type }: Passport
       setIsSaving(false);
       setLastSavedAt(new Date());
       toast({
-        title: "Sauvegarde automatique",
-        description: "Vos modifications ont été enregistrées",
+        title: "Sauvegarde réussie",
+        description: "Vos modifications ont été enregistrées avec succès",
         duration: 2000,
       });
     },
@@ -52,13 +57,13 @@ export function PassportFormProvider({ children, applicationId, type }: Passport
       setIsSaving(false);
       toast({
         title: "Erreur de sauvegarde",
-        description: "Impossible d'enregistrer vos modifications",
+        description: "Une erreur est survenue lors de l'enregistrement de vos modifications",
         variant: "destructive",
       });
     },
   });
 
-  // Load existing application data
+  // Chargement des données existantes de la demande
   useEffect(() => {
     async function loadApplication() {
       if (!applicationId) {
@@ -67,24 +72,31 @@ export function PassportFormProvider({ children, applicationId, type }: Passport
       }
 
       try {
+        // Récupération des données depuis Supabase
         const { data, error } = await supabase
           .from('passport_applications')
           .select('*')
-          .eq('id', applicationId)
+          .eq('application_id', applicationId)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Erreur lors du chargement:', error);
+          throw error;
+        }
 
         if (data) {
+          // Mise à jour des états avec les données récupérées
           setFormData(data.form_data || {});
           setCompletionPercentage(data.completion_percentage || 0);
-          setLastSavedAt(new Date(data.last_saved_at));
+          if (data.last_saved_at) {
+            setLastSavedAt(new Date(data.last_saved_at));
+          }
         }
       } catch (error) {
-        console.error('Error loading application:', error);
+        console.error('Erreur lors du chargement de la demande:', error);
         toast({
           title: "Erreur de chargement",
-          description: "Impossible de charger les données du formulaire",
+          description: "Une erreur est survenue lors du chargement de votre demande",
           variant: "destructive",
         });
       } finally {
@@ -95,7 +107,7 @@ export function PassportFormProvider({ children, applicationId, type }: Passport
     loadApplication();
   }, [applicationId, supabase, toast]);
 
-  // Update a single form field
+  // Mise à jour d'un champ unique du formulaire
   const updateFormField = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -104,7 +116,7 @@ export function PassportFormProvider({ children, applicationId, type }: Passport
     setIsSaving(true);
   };
 
-  // Update an entire form section
+  // Mise à jour d'une section entière du formulaire
   const updateFormSection = (section: string, data: any) => {
     setFormData(prev => ({
       ...prev,
@@ -113,6 +125,7 @@ export function PassportFormProvider({ children, applicationId, type }: Passport
     setIsSaving(true);
   };
 
+  // Rendu du Provider avec les valeurs du contexte
   return (
     <PassportFormContext.Provider
       value={{
@@ -130,10 +143,11 @@ export function PassportFormProvider({ children, applicationId, type }: Passport
   );
 }
 
+// Hook personnalisé pour utiliser le contexte
 export function usePassportForm() {
   const context = useContext(PassportFormContext);
   if (context === undefined) {
-    throw new Error('usePassportForm must be used within a PassportFormProvider');
+    throw new Error('usePassportForm doit être utilisé à l\'intérieur d\'un PassportFormProvider');
   }
   return context;
 } 

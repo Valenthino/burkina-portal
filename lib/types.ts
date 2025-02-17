@@ -101,6 +101,8 @@ export interface MenuLink {
   title: string;
   url: string;
   description?: string;
+  isNew?: boolean;
+  inProgress?: boolean;
 }
 
 export interface SubSection {
@@ -110,9 +112,7 @@ export interface SubSection {
 
 export interface MenuItem {
   title: string;
-  url: string;
-  description?: string;
-  subsections?: SubSection[];
+  sections: SubSection[];
 }
 
 export interface MegaMenuItem {
@@ -124,5 +124,5 @@ export interface MegaMenuItem {
 }
 
 export interface MegaMenu {
-  [key: string]: MegaMenuItem;
+  [key: string]: MenuItem;
 } 

@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { LoadingPage } from '@/components/ui/loading-page';
 
 export default function RenouvellementPage() {
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClientComponentClient();
 
@@ -15,10 +17,15 @@ export default function RenouvellementPage() {
         router.push('/auth?service=passeport&redirect=/services/citoyens/passeport/renouvellement');
         return;
       }
+      setLoading(false);
     }
 
     checkAuth();
   }, [router, supabase.auth]);
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
