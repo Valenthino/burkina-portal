@@ -18,6 +18,9 @@ CREATE INDEX IF NOT EXISTS services_slug_idx ON services (slug);
 CREATE INDEX IF NOT EXISTS services_ministere_idx ON services (ministere);
 CREATE INDEX IF NOT EXISTS services_categorie_idx ON services (categorie);
 
+-- Drop existing function if it exists
+DROP FUNCTION IF EXISTS generer_slug(TEXT);
+
 -- Function to generate slug from titre
 CREATE OR REPLACE FUNCTION generer_slug(titre TEXT)
 RETURNS TEXT AS $$
@@ -33,6 +36,9 @@ BEGIN
   RETURN titre;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Drop existing function if it exists
+DROP FUNCTION IF EXISTS definir_slug_service();
 
 -- Trigger to automatically generate slug before insert
 CREATE OR REPLACE FUNCTION definir_slug_service()
@@ -56,6 +62,9 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Drop existing trigger if it exists
+DROP TRIGGER IF EXISTS services_definir_slug ON services;
 
 CREATE TRIGGER services_definir_slug
   BEFORE INSERT OR UPDATE OF titre

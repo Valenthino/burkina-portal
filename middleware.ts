@@ -1,84 +1,116 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  })
+type ServiceConfig = {
+  routes: string[];
+  authPath: string;
+  dashboardPath: string;
+};
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-        },
-        remove(name: string, options: CookieOptions) {
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-        },
-      },
-    }
-  )
+type ServiceRoutes = {
+  [key: string]: ServiceConfig;
+};
 
-  const { data: { session }, error } = await supabase.auth.getSession()
-
-  // Protected routes that require authentication
-  const protectedRoutes = [
-    '/admin',
-    '/profile',
-    '/services/create',
-    '/demandes'
-  ]
-
-  const isProtectedRoute = protectedRoutes.some(route => 
-    request.nextUrl.pathname.startsWith(route)
-  )
-
-  if (isProtectedRoute && !session) {
-    // Redirect to login if accessing protected route without session
-    return NextResponse.redirect(new URL('/auth/login', request.url))
+// Service configuration for protected routes
+const serviceRoutes: ServiceRoutes = {
+  cnib: {
+    routes: ['/services/citoyens/cnib/apply', '/services/citoyens/cnib/success', '/services/citoyens/cnib/dashboard'],
+    authPath: '/auth?service=cnib',
+    dashboardPath: '/services/citoyens/cnib/dashboard'
+  },
+  passeport: {
+    routes: ['/services/citoyens/passeport/demande', '/services/citoyens/passeport/renouvellement', '/services/citoyens/passeport/tableau-de-bord'],
+    authPath: '/auth?service=passeport',
+    dashboardPath: '/services/citoyens/passeport/tableau-de-bord'
+  },
+  admin: {
+    routes: ['/admin'],
+    authPath: '/auth?service=admin',
+    dashboardPath: '/admin'
   }
+};
 
-  // Admin routes protection
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    const { data: { user } } = await supabase.auth.getUser()
-    const { data: roles } = await supabase
-      .from('utilisateurs_roles')
-      .select('role_id')
-      .eq('utilisateur_id', user?.id)
-      .single()
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
 
-    if (!roles || roles.role_id !== 1) { // Assuming role_id 1 is admin
-      return NextResponse.redirect(new URL('/', request.url))
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Determine which service is being accessed
+  const path = req.nextUrl.pathname;
+  let targetService: string | null = null;
+  let requiresAuth = false;
+
+  for (const [service, config] of Object.entries(serviceRoutes)) {
+    if (config.routes.some(route => path.startsWith(route))) {
+      targetService = service;
+      requiresAuth = true;
+      break;
     }
   }
 
-  return response
+  // Get the last authenticated service from cookies
+  const lastAuthService = req.cookies.get('last_auth_service')?.value;
+
+  // If accessing a protected route
+  if (requiresAuth) {
+    const service = targetService || 'cnib';
+    
+    // Check if user is authenticated and using the same service
+    if (!session || lastAuthService !== service) {
+      // Clear the session if switching services
+      if (session && lastAuthService !== service) {
+        await supabase.auth.signOut();
+      }
+
+      const redirectUrl = new URL(serviceRoutes[service].authPath, req.url);
+      redirectUrl.searchParams.set('redirect', req.nextUrl.pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+
+  // If accessing auth page
+  if (path === '/auth') {
+    const service = req.nextUrl.searchParams.get('service') || 'cnib';
+    const requestedRedirect = req.nextUrl.searchParams.get('redirect');
+    
+    // If authenticated but for a different service, sign out
+    if (session && lastAuthService && lastAuthService !== service) {
+      await supabase.auth.signOut();
+      const response = NextResponse.next();
+      response.cookies.delete('last_auth_service');
+      return response;
+    }
+
+    // If authenticated for the same service, redirect to the requested page or dashboard
+    if (session && lastAuthService === service) {
+      const redirectTo = requestedRedirect || serviceRoutes[service].dashboardPath;
+      return NextResponse.redirect(new URL(redirectTo, req.url));
+    }
+  }
+
+  // Set the last authenticated service cookie after successful authentication
+  if (session && targetService) {
+    res.cookies.set('last_auth_service', targetService, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/'
+    });
+  }
+
+  return res;
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
+    '/dashboard/:path*',
+    '/auth/:path*',
+    '/services/citoyens/cnib/:path*',
+    '/services/citoyens/passeport/:path*',
+    '/admin/:path*',
   ],
-} 
+}; 

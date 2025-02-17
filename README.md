@@ -14,6 +14,7 @@ Ce document décrit les fonctionnalités, les services et les composants clés d
 8. [Tests et Assurance Qualité](#tests-et-assurance-qualité)
 9. [Gestion des Données](#gestion-des-données)
 10. [Accessibilité](#accessibilité)
+11. [Système d'Administration](#système-dadministration)
 
 ## Architecture du Système
 Le portail utilise une architecture en microservices, facilitant la scalabilité et la maintenance. Chaque service est indépendant et communique via des API RESTful sécurisées.
@@ -34,7 +35,7 @@ Modern, accessible government portal built with Next.js 14, focusing on performa
 
 ## Tech Stack
 - **Frontend**: Next.js 14, Tailwind CSS
-- **Backend**: Node.js, Express
+- **Backend**: Node.js
 - **Database**: Supabase
 - **Testing**: TBD
 - **Infrastructure**: Docker
@@ -47,3 +48,57 @@ Modern, accessible government portal built with Next.js 14, focusing on performa
 5. **Responsive Design**
 6. **Performance Optimization**
 7. **Security Features**
+
+## Système d'Administration
+
+### Hiérarchie des Rôles
+Le système d'administration est organisé selon une hiérarchie à trois niveaux :
+
+1. **Super Admin (Niveau 100)**
+   - Accès complet à toutes les fonctionnalités
+   - Gestion des utilisateurs et des rôles
+   - Configuration système globale
+   - Supervision de tous les ministères
+
+2. **Admin Ministériel (Niveau 80)**
+   - Gestion de leur ministère spécifique
+   - Supervision des agents
+   - Accès aux statistiques et rapports
+   - Gestion des services ministériels
+
+3. **Agent (Niveau 50)**
+   - Traitement des demandes
+   - Accès limité aux fonctionnalités de base
+   - Vue restreinte aux données pertinentes
+
+### Fonctionnalités Administratives
+
+#### Tableau de Bord
+- Vue d'ensemble des statistiques
+- Activités récentes
+- Indicateurs de performance
+- Alertes et notifications
+
+#### Gestion des Utilisateurs
+- Création et modification des comptes
+- Attribution des rôles
+- Gestion des permissions
+- Audit des actions utilisateurs
+
+#### Gestion des Ministères
+- Configuration des services
+- Gestion des agents
+- Suivi des demandes
+- Statistiques ministérielles
+
+#### Sécurité et Audit
+- Journalisation des actions
+- Traçabilité complète
+- Politiques de sécurité par rôle
+- Protection des données sensibles
+
+### Accès et Navigation
+- Interface intuitive et responsive
+- Menu contextuel selon le rôle
+- Tableau de bord personnalisé
+- Navigation simplifiée entre les sections

@@ -65,6 +65,13 @@ export default function Footer() {
           <Link href="/droit-auteur" className="hover:text-primary transition-colors">
             Droit d'auteur
           </Link>
+          <span className="hidden sm:block">•</span>
+          <Link 
+            href="/auth?service=admin&redirect=/admin" 
+            className="text-gray-400 hover:text-primary transition-colors"
+          >
+            Administration
+          </Link>
         </div>
 
         {/* Secondary Links */}

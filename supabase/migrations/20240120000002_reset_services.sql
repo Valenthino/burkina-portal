@@ -5,14 +5,6 @@ BEGIN
     IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'services') THEN
         DROP TABLE public.services CASCADE;
     END IF;
-    
-    IF EXISTS (SELECT FROM pg_proc WHERE proname = 'generer_slug') THEN
-        DROP FUNCTION public.generer_slug CASCADE;
-    END IF;
-    
-    IF EXISTS (SELECT FROM pg_proc WHERE proname = 'definir_slug_service') THEN
-        DROP FUNCTION public.definir_slug_service CASCADE;
-    END IF;
 END $$;
 
 -- Create services table
@@ -35,7 +27,11 @@ CREATE INDEX IF NOT EXISTS services_slug_idx ON services (slug);
 CREATE INDEX IF NOT EXISTS services_ministere_idx ON services (ministere);
 CREATE INDEX IF NOT EXISTS services_categorie_idx ON services (categorie);
 
--- Function to generate slug from titre (only create if doesn't exist)
+-- Drop existing functions if they exist
+DROP FUNCTION IF EXISTS generer_slug(TEXT) CASCADE;
+DROP FUNCTION IF EXISTS definir_slug_service() CASCADE;
+
+-- Function to generate slug from titre
 CREATE OR REPLACE FUNCTION generer_slug(titre TEXT)
 RETURNS TEXT AS $$
 BEGIN
@@ -76,6 +72,7 @@ $$ LANGUAGE plpgsql;
 
 -- Drop and recreate trigger to avoid duplicate triggers
 DROP TRIGGER IF EXISTS services_definir_slug ON services;
+
 CREATE TRIGGER services_definir_slug
   BEFORE INSERT OR UPDATE OF titre
   ON services

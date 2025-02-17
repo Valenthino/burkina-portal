@@ -1,7 +1,38 @@
 'use client';
 
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
 import Breadcrumb from '@/app/components/Breadcrumb';
+
+const formSchema = z.object({
+  firstName: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères'),
+  lastName: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
+  motherName: z.string().min(2, 'Le nom de la mère doit contenir au moins 2 caractères'),
+  fatherName: z.string().min(2, 'Le nom du père doit contenir au moins 2 caractères'),
+  birthDate: z.string(),
+  birthPlace: z.string().min(2, 'Le lieu de naissance est requis'),
+  nationality: z.string().min(2, 'La nationalité est requise'),
+  profession: z.string().min(2, 'La profession est requise'),
+  address: z.string().min(5, 'L\'adresse doit contenir au moins 5 caractères'),
+  phone: z.string().min(8, 'Le numéro de téléphone est requis'),
+  email: z.string().email('Email invalide'),
+  gender: z.enum(['M', 'F']),
+});
 
 const breadcrumbItems = [
   { label: 'Accueil', href: '/' },
@@ -10,15 +41,79 @@ const breadcrumbItems = [
   { label: 'CNIB', href: '/services/citoyens/cnib' }
 ];
 
-export default function CNIBPage() {
+export default function CNIBApplicationPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      motherName: '',
+      fatherName: '',
+      birthDate: '',
+      birthPlace: '',
+      nationality: '',
+      profession: '',
+      address: '',
+      phone: '',
+      email: '',
+      gender: 'M',
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsSubmitting(true);
+      const response = await fetch('/api/cnib/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la soumission');
+      }
+
+      setSubmitSuccess(true);
+      // Redirect to success page or show success message
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-white p-8">
       <div className="max-w-7xl mx-auto">
         <Breadcrumb items={breadcrumbItems} />
         
-        <h1 className="text-4xl font-bold mb-8 border-b pb-2">
-          Carte Nationale d'Identité Burkinabè (CNIB)
-        </h1>
+        <div className="flex justify-between items-center mb-8 border-b pb-4">
+          <h1 className="text-4xl font-bold">
+            Carte Nationale d'Identité Burkinabè (CNIB)
+          </h1>
+        </div>
+
+        {/* New CTA Section */}
+        <div className="bg-blue-50 p-8 rounded-lg mb-8 text-center">
+          <h2 className="text-2xl font-bold text-blue-900 mb-4">
+            Faites votre demande de CNIB en ligne
+          </h2>
+          <p className="text-blue-800 mb-6 max-w-2xl mx-auto">
+            Initiez votre demande de CNIB en ligne et gagnez du temps. 
+            Après la soumission, vous recevrez un récépissé avec un code QR 
+            à présenter lors de votre visite au centre d'établissement.
+          </p>
+          <Link href="/services/citoyens/cnib/apply">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+              Commencer ma demande
+            </Button>
+          </Link>
+        </div>
 
         <div className="prose max-w-none mb-12">
           {/* Introduction */}
@@ -41,7 +136,7 @@ export default function CNIBPage() {
           {/* Procédure de demande */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 className="text-2xl font-semibold mb-6">Procédure de Demande</h2>
-            
+
             <h3 className="text-xl font-semibold mb-4">Documents Requis</h3>
             <ul className="list-disc pl-6 mb-6">
               <li>Extrait d'acte de naissance ou jugement supplétif</li>
@@ -140,8 +235,9 @@ export default function CNIBPage() {
               <div>
                 <h3 className="font-semibold">Peut-on faire la demande en ligne ?</h3>
                 <p className="text-gray-600">
-                  Non, la présence physique est obligatoire pour la prise des données 
-                  biométriques.
+                  Oui, vous pouvez désormais initier votre demande en ligne. Cependant, 
+                  une visite au centre d'établissement sera nécessaire pour la prise des 
+                  données biométriques.
                 </p>
               </div>
             </div>

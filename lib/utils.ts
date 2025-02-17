@@ -1,3 +1,6 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
 export const CATEGORY_NAMES: { [key: string]: string } = {
   'citoyens': 'Services aux citoyens',
   'entreprises': 'Services aux entreprises',
@@ -70,4 +73,8 @@ export function formatServiceUrl(service: {
   }
 
   return `/${service.category}/${service.slug}`
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 } 

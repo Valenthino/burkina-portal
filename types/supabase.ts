@@ -9,6 +9,74 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      cnib_applications: {
+        Row: {
+          id: string
+          application_id: string
+          user_id: string
+          status: string
+          first_name: string
+          last_name: string
+          mother_name: string
+          father_name: string
+          birth_date: string
+          birth_place: string
+          nationality: string
+          profession: string
+          address: string
+          phone: string
+          email: string
+          gender: string
+          qr_code: string | null
+          barcode: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          application_id: string
+          user_id: string
+          status?: string
+          first_name: string
+          last_name: string
+          mother_name: string
+          father_name: string
+          birth_date: string
+          birth_place: string
+          nationality: string
+          profession: string
+          address: string
+          phone: string
+          email: string
+          gender: string
+          qr_code?: string | null
+          barcode?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          application_id?: string
+          user_id?: string
+          status?: string
+          first_name?: string
+          last_name?: string
+          mother_name?: string
+          father_name?: string
+          birth_date?: string
+          birth_place?: string
+          nationality?: string
+          profession?: string
+          address?: string
+          phone?: string
+          email?: string
+          gender?: string
+          qr_code?: string | null
+          barcode?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
       utilisateurs: {
         Row: {
           id: string

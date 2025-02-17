@@ -16,6 +16,11 @@ export const createClient = () => {
       auth: {
         getUser: () => Promise.resolve({ data: { user: null }, error: null }),
         signOut: () => Promise.resolve({ error: null }),
+        signInWithPassword: () => Promise.resolve({ data: { user: null }, error: null }),
+        signUp: () => Promise.resolve({ data: { user: null }, error: null }),
+        signInWithOtp: () => Promise.resolve({ data: { user: null }, error: null }),
+        verifyOtp: () => Promise.resolve({ data: { user: null }, error: null }),
+        signInWithOAuth: () => Promise.resolve({ data: { user: null }, error: null }),
         onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } }, error: null })
       }
     }

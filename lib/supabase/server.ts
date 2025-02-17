@@ -1,32 +1,33 @@
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
-import { Database } from '@/types/supabase'
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { Database } from '@/types/supabase';
 
-export function createClient() {
-  // During build time, return a mock client if environment variables are not available
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-    return {
-      from: () => ({
-        select: () => ({ data: [], error: null }),
-        insert: () => ({ data: null, error: null }),
-        update: () => ({ data: null, error: null }),
-        delete: () => ({ data: null, error: null }),
-        eq: () => ({ data: [], error: null }),
-        single: () => ({ data: null, error: null })
-      })
-    }
-  }
+export const createClient = () => {
+  const cookieStore = cookies();
 
-  // Use service role key for server operations
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  
-  return createSupabaseClient<Database>(
-    supabaseUrl,
-    supabaseKey,
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      auth: {
-        persistSession: false,
-      }
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options: any) {
+          try {
+            cookieStore.set({ name, value, ...options });
+          } catch (error) {
+            // Handle cookie errors
+          }
+        },
+        remove(name: string, options: any) {
+          try {
+            cookieStore.set({ name, value: '', ...options });
+          } catch (error) {
+            // Handle cookie errors
+          }
+        },
+      },
     }
-  )
-} 
+  );
+}; 

@@ -8,63 +8,55 @@ ALTER TABLE services ADD COLUMN IF NOT EXISTS ordre INTEGER DEFAULT 0;
 CREATE INDEX IF NOT EXISTS services_section_idx ON services (section);
 CREATE INDEX IF NOT EXISTS services_sous_section_idx ON services (sous_section);
 
--- Update the slug generation function to handle existing URLs
-CREATE OR REPLACE FUNCTION generer_slug(titre TEXT, section TEXT DEFAULT NULL, sous_section TEXT DEFAULT NULL)
+-- Drop existing functions and triggers
+DROP FUNCTION IF EXISTS generer_slug(TEXT) CASCADE;
+DROP FUNCTION IF EXISTS definir_slug_service() CASCADE;
+DROP TRIGGER IF EXISTS services_definir_slug ON services;
+
+-- Function to generate slug from titre
+CREATE OR REPLACE FUNCTION generer_slug(titre TEXT)
 RETURNS TEXT AS $$
-DECLARE
-    base_slug TEXT;
 BEGIN
-    IF section IS NOT NULL AND sous_section IS NOT NULL THEN
-        base_slug := lower(section) || '/' || lower(sous_section) || '/' || 
-                     regexp_replace(
-                         translate(
-                             lower(titre),
-                             'àáâãäçèéêëìíîïñòóôõöùúûüýÿ',
-                             'aaaaaceeeeiiiinooooouuuuyy'
-                         ),
-                         '[^a-z0-9]+', '-', 'g'
-                     );
-    ELSE
-        base_slug := regexp_replace(
-            translate(
-                lower(titre),
-                'àáâãäçèéêëìíîïñòóôõöùúûüýÿ',
-                'aaaaaceeeeiiiinooooouuuuyy'
-            ),
-            '[^a-z0-9]+', '-', 'g'
-        );
-    END IF;
-    
-    RETURN trim(both '-' from base_slug);
+  -- Convert to lowercase
+  titre := lower(titre);
+  -- Replace accented characters
+  titre := translate(titre, 'àáâãäçèéêëìíîïñòóôõöùúûüýÿ', 'aaaaaceeeeiiiinooooouuuuyy');
+  -- Replace spaces and special characters with hyphens
+  titre := regexp_replace(titre, '[^a-z0-9]+', '-', 'g');
+  -- Remove leading and trailing hyphens
+  titre := trim(both '-' from titre);
+  RETURN titre;
 END;
 $$ LANGUAGE plpgsql;
 
--- Update trigger function to use new slug generation
+-- Trigger to automatically generate slug before insert
 CREATE OR REPLACE FUNCTION definir_slug_service()
 RETURNS TRIGGER AS $$
 DECLARE
-    nouveau_slug TEXT;
-    compteur INTEGER := 1;
+  base_slug TEXT;
+  nouveau_slug TEXT;
+  compteur INTEGER := 1;
 BEGIN
-    -- If url_existante is provided, use it
-    IF NEW.url_existante IS NOT NULL THEN
-        NEW.slug := ltrim(NEW.url_existante, '/');
-        RETURN NEW;
-    END IF;
-
-    -- Generate new slug based on section and sous_section
-    nouveau_slug := generer_slug(NEW.titre, NEW.section, NEW.sous_section);
-    
-    -- Handle duplicates
-    WHILE EXISTS (SELECT 1 FROM services WHERE slug = nouveau_slug AND id != NEW.id) LOOP
-        compteur := compteur + 1;
-        nouveau_slug := nouveau_slug || '-' || compteur;
-    END LOOP;
-    
-    NEW.slug := nouveau_slug;
-    RETURN NEW;
+  -- Generate the base slug
+  base_slug := generer_slug(NEW.titre);
+  nouveau_slug := base_slug;
+  
+  -- Check for existing slugs and append number if needed
+  WHILE EXISTS (SELECT 1 FROM services WHERE slug = nouveau_slug AND id != NEW.id) LOOP
+    compteur := compteur + 1;
+    nouveau_slug := base_slug || '-' || compteur;
+  END LOOP;
+  
+  NEW.slug := nouveau_slug;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER services_definir_slug
+  BEFORE INSERT OR UPDATE OF titre
+  ON services
+  FOR EACH ROW
+  EXECUTE FUNCTION definir_slug_service();
 
 -- Truncate and reinsert data with proper categorization
 TRUNCATE TABLE services CASCADE;
