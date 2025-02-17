@@ -238,22 +238,22 @@ const serviceCategories: Record<ServiceCategory, Service[]> = {
       title: "Création d'entreprise",
       description: "Formalités de création, statuts juridiques, immatriculation, registre du commerce, numéro RCCM, capital social, domiciliation",
       icon: RiBuilding2Line,
-      url: "/services/entreprises/creation"
+      url: "/entreprises/creation"
     },
     {
       title: "Impôts entreprise",
-      description: "Déclaration fiscale, TVA, impôt sur les sociétés, taxes professionnelles, obligations fiscales, comptabilité, bilan",
+      description: "Déclaration fiscale, TVA, impôt sur les sociétés, taxes professionnelles, obligations fiscales",
       icon: RiMoneyDollarCircleLine,
-      url: "/services/entreprises/impots"
+      url: "/entreprises/fiscalite/"
     },
     {
       title: "Marchés publics",
       description: "Appels d'offres, soumissions, cahiers des charges, procédures de passation, suivi des marchés, factures publiques",
       icon: RiGovernmentLine,
-      url: "/services/entreprises/marches-publics"
+      url: "/entreprises/marches-publics"
     },
     {
-      title: "Import/Export",
+      title: "/entreprises/commerce-international",
       description: "Procédures douanières, licences d'importation, certificats d'origine, normes internationales, transport international",
       icon: RiGlobalLine,
       url: "/services/entreprises/import-export"
@@ -268,7 +268,7 @@ const serviceCategories: Record<ServiceCategory, Service[]> = {
       title: "Financement",
       description: "Prêts bancaires, subventions, investissements, capital-risque, microfinance, garanties financières, fonds de roulement",
       icon: RiMoneyDollarCircleLine,
-      url: "/services/entreprises/financement"
+      url: "/entreprises/creation/financement"
     },
     {
       title: "Propriété intellectuelle",
@@ -280,7 +280,7 @@ const serviceCategories: Record<ServiceCategory, Service[]> = {
       title: "Formation professionnelle",
       description: "Plans de formation, certifications professionnelles, VAE, financement formation, e-learning, stages, alternance",
       icon: RiGraduationCapLine,
-      url: "/services/entreprises/formation"
+      url: "/emploi/formation-professionnelle"
     },
     {
       title: "Normes et certifications",
@@ -541,10 +541,10 @@ export default function HomePage() {
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               {/* Fonds de Soutien Section */}
               <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border-2 border-white/20">
-                <h2 className="text-2xl font-bold mb-4 text-left text-red-400">
+                <h2 className="text-2xl font-bold mb-4 text-center text-red-400">
                   Soutenez la Nation !
                 </h2>
-                <div className="text-left mb-4">
+                <div className="text-center mb-4">
                   <p className="text-lg">
                     Le Fonds de Soutien Patriotique vous permet de contribuer directement à la sécurisation et a l'équipement des FDS/VDP.
                   </p>
@@ -558,24 +558,25 @@ export default function HomePage() {
                   </span>
                 </Link>
               </div>
-              {/* Help Section */}
-              {/*
+              {/* Entreprise Section */}
+              
               <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border-2 border-white/20">
                 <h2 className="text-2xl font-bold mb-4 text-left">
-                  Besoin d'aide ?
+                  Créer mon entreprise ?
                 </h2>
                 <div className="text-left mb-4">
                   <p className="text-lg">
-                    Nos agents vous accompagnent dans vos démarches administratives du quotidien (CNIB, passeport, impôts, permis...)
+                    Vous pouvez creer votre entreprise en ligne et recevoir les formalités administratives en ligne. Comme vous le souhaitez.
                   </p>
                 </div>
-                <button 
+                <Link 
+                  href="/entreprises/creation"
                   className="w-full bg-white text-primary px-6 py-3 rounded-lg hover:bg-gray-100 transition-all font-semibold"
                 >
-                  Trouver de l'aide près de chez moi
-                </button>
+                  Créer mon entreprise !
+                </Link>
               </div>
-              */}
+              
             </div>
             <p className="text-xl mb-8 text-gray-100">
               Traiter les affaires officielles en ligne, facilement et en toute sécurité !
