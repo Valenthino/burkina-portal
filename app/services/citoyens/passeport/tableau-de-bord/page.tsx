@@ -84,17 +84,37 @@ export default function TableauDeBordPasseport() {
 
     async function fetchApplications(userId: string) {
       try {
-        const { data, error } = await supabase
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError) {
+          console.error('Authentication error:', authError);
+          setError('Erreur d\'authentification: ' + authError.message);
+          router.push('/auth?service=passeport&redirect=/services/citoyens/passeport/tableau-de-bord');
+          return;
+        }
+
+        if (!user) {
+          console.error('No authenticated user found');
+          setError('Utilisateur non authentifié');
+          router.push('/auth?service=passeport&redirect=/services/citoyens/passeport/tableau-de-bord');
+          return;
+        }
+
+        const { data, error: fetchError } = await supabase
           .from('passport_applications')
           .select('*')
           .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
-        if (error) throw error;
+        if (fetchError) {
+          console.error('Error fetching applications:', fetchError);
+          setError('Erreur lors du chargement de vos demandes: ' + fetchError.message);
+          return;
+        }
+
         setApplications(data || []);
       } catch (error) {
-        console.error('Error fetching applications:', error);
-        setError('Erreur lors du chargement de vos demandes');
+        console.error('Error in fetchApplications:', error);
+        setError('Une erreur est survenue lors du chargement de vos demandes');
       } finally {
         setLoading(false);
       }

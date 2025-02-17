@@ -26,8 +26,26 @@ export const createClient = () => {
     }
   }
 
-  return createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    throw new Error('Missing Supabase environment variables')
+  }
+
+  const client = createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      auth: {
+        persistSession: true,
+        detectSessionInUrl: true,
+        autoRefreshToken: true,
+      },
+      global: {
+        headers: {
+          'x-application-name': 'burkina-portal',
+        },
+      },
+    }
   )
+
+  return client
 } 

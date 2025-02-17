@@ -33,6 +33,19 @@ export function useAutoSave({
   // Function to save form data
   const saveFormData = useCallback(async (data: any) => {
     try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        console.error('Authentication error:', authError);
+        onSaveError?.(new Error('Authentication error: ' + authError.message));
+        return;
+      }
+      
+      if (!user) {
+        console.error('No authenticated user found');
+        onSaveError?.(new Error('No authenticated user found'));
+        return;
+      }
+
       const currentDataString = JSON.stringify(data);
       if (currentDataString === lastSavedData.current) {
         return; // No changes to save
@@ -42,32 +55,40 @@ export function useAutoSave({
       
       if (applicationId) {
         // Update existing application
-        const { error } = await supabase
+        const { error: updateError } = await supabase
           .from('passport_applications')
           .update({
             form_data: data,
-            completion_percentage: completionPercentage,
-            last_saved_at: new Date().toISOString()
+            last_saved_at: new Date().toISOString(),
+            completion_percentage: completionPercentage
           })
           .eq('id', applicationId);
 
-        if (error) throw error;
+        if (updateError) {
+          console.error('Error updating form:', updateError);
+          onSaveError?.(new Error('Error updating form: ' + updateError.message));
+          return;
+        }
       } else {
         // Create new application
-        const { data: newApplication, error } = await supabase
+        const { data: newApplication, error: insertError } = await supabase
           .from('passport_applications')
-          .insert([{
-            user_id: (await supabase.auth.getUser()).data.user?.id,
+          .insert({
+            user_id: user.id,
             form_data: data,
-            completion_percentage: completionPercentage,
-            type: type,
-            status: 'draft'
-          }])
+            type,
+            status: 'draft',
+            completion_percentage: completionPercentage
+          })
           .select()
           .single();
 
-        if (error) throw error;
-        
+        if (insertError) {
+          console.error('Error creating form:', insertError);
+          onSaveError?.(new Error('Error creating form: ' + insertError.message));
+          return;
+        }
+
         // Update URL with application ID without page reload
         if (newApplication) {
           router.replace(`?id=${newApplication.id}`, { scroll: false });
@@ -79,7 +100,7 @@ export function useAutoSave({
       onSaveSuccess?.();
     } catch (error) {
       console.error('Error saving form:', error);
-      onSaveError?.(error);
+      onSaveError?.(error instanceof Error ? error : new Error('Unknown error saving form'));
     }
   }, [applicationId, supabase, type, router, onSaveSuccess, onSaveError]);
 

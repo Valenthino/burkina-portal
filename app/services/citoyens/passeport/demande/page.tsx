@@ -130,47 +130,63 @@ export default function PassportApplicationPage() {
 
   async function loadDraft(userId: string) {
     try {
-      const { data, error } = await supabase
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        console.error('Authentication error:', authError);
+        setError('Erreur d\'authentification: ' + authError.message);
+        return;
+      }
+
+      if (!user) {
+        console.error('No authenticated user found');
+        setError('Utilisateur non authentifié');
+        router.push('/auth?service=passeport&redirect=/services/citoyens/passeport/demande');
+        return;
+      }
+
+      const { data, error: draftError } = await supabase
         .from('passport_applications')
         .select('*')
         .eq('user_id', userId)
         .eq('status', 'draft')
         .single();
 
-      if (error) {
-        if (error.code === 'PGRST116') {
+      if (draftError) {
+        if (draftError.code === 'PGRST116') {
           // No draft found - this is normal for new applications
           return;
         }
-        console.error('Error loading draft:', error);
+        console.error('Error loading draft:', draftError);
+        setError('Erreur lors du chargement du brouillon: ' + draftError.message);
         return;
       }
 
       if (data) {
         form.reset({
-          type: data.type,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          birthDate: data.birth_date,
-          birthPlace: data.birth_place,
-          nationality: data.nationality,
-          gender: data.gender,
-          profession: data.profession,
-          address: data.address,
-          phone: data.phone,
-          email: data.email,
-          fatherName: data.father_name,
-          motherName: data.mother_name,
-          emergencyContact: data.emergency_contact,
-          height: data.height,
-          eyeColor: data.eye_color,
-          maritalStatus: data.marital_status,
+          type: data.type || 'ordinaire',
+          firstName: data.first_name || '',
+          lastName: data.last_name || '',
+          birthDate: data.birth_date || '',
+          birthPlace: data.birth_place || '',
+          nationality: data.nationality || 'Burkinabè',
+          gender: data.gender || 'M',
+          profession: data.profession || '',
+          address: data.address || '',
+          phone: data.phone || '',
+          email: data.email || '',
+          fatherName: data.father_name || '',
+          motherName: data.mother_name || '',
+          emergencyContact: data.emergency_contact || '',
+          height: data.height || '',
+          eyeColor: data.eye_color || '',
+          maritalStatus: data.marital_status || 'single',
         });
         setPhotoUrl(data.photo_url);
         setSignatureUrl(data.signature_url);
       }
     } catch (err) {
       console.error('Error in loadDraft:', err);
+      setError('Une erreur est survenue lors du chargement du brouillon');
     }
   }
 
