@@ -537,6 +537,46 @@ export default function HomePage() {
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               Portail du Gouvernement du Burkina Faso
             </h1>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              {/* Fonds de Soutien Section */}
+              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border-2 border-white/20">
+                <h2 className="text-2xl font-bold mb-4 text-left text-red-400">
+                  Soutenez la Nation !
+                </h2>
+                <div className="text-left mb-4">
+                  <p className="text-lg">
+                    Le Fonds de Soutien Patriotique vous permet de contribuer directement à la sécurisation et a l'équipement des FDS/VDP.
+                  </p>
+                </div>
+                <Link 
+                  href="/fond-soutien-patriotique"
+                  className="inline-block w-full bg-red-400 text-white px-6 py-3 rounded-lg hover:bg-red-500 transition-all text-center"
+                >
+                  <span className="font-semibold">
+                    Contribuer au Fonds Patriotique
+                  </span>
+                </Link>
+              </div>
+              {/* Help Section */}
+              {/*
+              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg border-2 border-white/20">
+                <h2 className="text-2xl font-bold mb-4 text-left">
+                  Besoin d'aide ?
+                </h2>
+                <div className="text-left mb-4">
+                  <p className="text-lg">
+                    Nos agents vous accompagnent dans vos démarches administratives du quotidien (CNIB, passeport, impôts, permis...)
+                  </p>
+                </div>
+                <button 
+                  className="w-full bg-white text-primary px-6 py-3 rounded-lg hover:bg-gray-100 transition-all font-semibold"
+                >
+                  Trouver de l'aide près de chez moi
+                </button>
+              </div>
+              */}
+            </div>
             <p className="text-xl mb-8 text-gray-100">
               Traiter les affaires officielles en ligne, facilement et en toute sécurité !
             </p>
