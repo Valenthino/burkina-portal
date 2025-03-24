@@ -49,7 +49,7 @@
 - Routes: kebab-case (French)
 
 ## Code Style
-- Follow Airbnb JavaScript standards
+- Follow best Typescript standards
 - 2 spaces indentation
 - Single quotes for strings
 - Use TypeScript for type safety
@@ -78,8 +78,7 @@
 - Maintain staging and production environments
 
 ## Database
-- Use PostgreSQL
-- Implement Prisma ORM
+- Use Supabase for database management
 - Regular automated backups
 - Version-controlled migrations
 

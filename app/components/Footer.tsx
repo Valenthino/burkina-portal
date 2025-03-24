@@ -3,17 +3,47 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCallback } from 'react';
 
 // Composant Footer qui apparaît au bas de chaque page
 export default function Footer() {
   // Création d'une variable d'état pour l'année, initialement vide
   const [year, setYear] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+  const [presidenceImageUrl, setPresidenceImageUrl] = useState('');
 
   // Cet effet s'exécute une fois lors du chargement du composant
   // Il définit l'année actuelle pour la notice de copyright
   useEffect(() => {
     setYear(new Date().getFullYear().toString());
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        const imagePath = isMobile ? '/images/mobile_Presidence.png' : '/images/LaPresidenceBurkina.png';
+        const response = await fetch(imagePath);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        setPresidenceImageUrl(url);
+
+        return () => URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error loading image:', error);
+      }
+    };
+
+    loadImage();
+  }, [isMobile]);
 
   // Configuration des images des organisations avec dimensions ajustées
   const organizations = [
@@ -136,22 +166,24 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Sitarail Section - Dark Theme */}
+      {/* Présidence 2025 Section - Dark Theme */}
       <div className="relative w-full bg-primary text-white overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 z-0">
+        {/* Background Image with Overlay - Positioned on right side */}
+        <div className="absolute right-0 top-0 bottom-0 w-full md:w-1/2 lg:w-2/5 z-0">
           {/* Base overlay */}
-          <div className="absolute inset-0 bg-primary/90" />
+          <div className="absolute inset-0 bg-primary/50" />
           {/* Gradient overlay - stronger on left, fading to right */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-transparent" 
-               style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }} />
-          <Image
-            src="/images/Sitarail_bobo.jpg"
-            alt="Gare de Sitarail à Bobo-Dioulasso"
-            fill
-            className="object-cover object-center sm:object-right opacity-25"
-            priority
-          />
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-primary/40 to-primary/60" />
+          {presidenceImageUrl && (
+            <Image
+              src={presidenceImageUrl}
+              alt="La Presidence Burkina Faso"
+              fill
+              className="object-cover object-right opacity-15 grayscale contrast-110"
+              priority
+              unoptimized
+            />
+          )}
         </div>
 
         {/* Content */}
@@ -192,4 +224,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-} 
+}

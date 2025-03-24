@@ -3,40 +3,37 @@
 import { useSearchParams } from 'next/navigation';
 import AuthLayout from '@/components/auth/AuthLayout';
 import AuthForm from '@/components/auth/AuthForm';
-
-interface ServiceConfig {
-  title: string;
-  description: string;
-  defaultRedirect: string;
-  requiresNewLogin: boolean;
-}
-
-const serviceConfig: Record<string, ServiceConfig> = {
-  cnib: {
-    title: "Carte Nationale d'Identité Burkinabè",
-    description: "Connectez-vous pour gérer vos demandes de CNIB",
-    defaultRedirect: "/services/citoyens/cnib/dashboard",
-    requiresNewLogin: true
-  },
-  passeport: {
-    title: "Passeport Burkinabè",
-    description: "Connectez-vous pour gérer vos demandes de passeport",
-    defaultRedirect: "/services/citoyens/passeport/tableau-de-bord",
-    requiresNewLogin: true
-  },
-  admin: {
-    title: "Administration",
-    description: "Accès réservé aux administrateurs",
-    defaultRedirect: "/admin",
-    requiresNewLogin: true
-  }
-};
+import { getServiceConfig, getRedirectUrl } from '@/lib/auth/serviceConfig';
+import { useEffect } from 'react';
 
 export default function AuthPage() {
   const searchParams = useSearchParams();
   const service = searchParams.get('service') || 'cnib';
-  const redirectTo = searchParams.get('redirect') || serviceConfig[service as keyof typeof serviceConfig]?.defaultRedirect;
-  const config = serviceConfig[service as keyof typeof serviceConfig] || serviceConfig.cnib;
+  const redirectTo = getRedirectUrl(service, searchParams.get('redirect'));
+  const config = getServiceConfig(service);
+
+  // Set service cookie when auth page is loaded
+  useEffect(() => {
+    const setServiceCookie = async () => {
+      try {
+        const response = await fetch('/api/auth/set-service-cookie', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ service }),
+        });
+        
+        if (!response.ok) {
+          console.error('Erreur lors de la définition du cookie de service:', await response.text());
+        }
+      } catch (error) {
+        console.error('Erreur lors de la définition du cookie de service:', error);
+      }
+    };
+    
+    setServiceCookie();
+  }, [service]);
 
   return (
     <AuthLayout
@@ -51,4 +48,4 @@ export default function AuthPage() {
       />
     </AuthLayout>
   );
-} 
+}

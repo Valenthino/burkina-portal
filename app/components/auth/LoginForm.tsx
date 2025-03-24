@@ -18,6 +18,9 @@ export default function LoginForm() {
     setLoading(true)
 
     try {
+      // Toujours se déconnecter d'abord pour assurer une session propre
+      await supabase.auth.signOut()
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -26,30 +29,57 @@ export default function LoginForm() {
       if (error) throw error
 
       // Log successful login
-      await supabase.from('journaux_securite').insert([
-        {
-          utilisateur_id: data.user?.id,
-          action: 'connexion',
-          description: 'Connexion réussie',
-          adresse_ip: '', // You can add IP tracking if needed
-          user_agent: navigator.userAgent
+      try {
+        if (data.user) {
+          await supabase.from('journaux_securite').insert([
+            {
+              utilisateur_id: data.user.id,
+              action: 'connexion',
+              description: 'Connexion réussie',
+              adresse_ip: '', // You can add IP tracking if needed
+              user_agent: navigator.userAgent,
+              service: 'default' // Default service if not specified
+            }
+          ])
+          
+          // Set default service cookie
+          const response = await fetch('/api/auth/set-service-cookie', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ service: 'default' }),
+          })
+          
+          if (!response.ok) {
+            console.error('Erreur lors de la définition du cookie de service:', await response.text())
+          }
         }
-      ])
+      } catch (logError) {
+        console.error('Erreur lors de la journalisation de connexion:', logError)
+        // Continue with redirection even if logging fails
+      }
 
       router.push('/dashboard')
       router.refresh()
     } catch (error: any) {
+      console.error('Erreur de connexion:', error)
       setError(error.message)
       
       // Log failed login attempt
-      await supabase.from('tentatives_connexion').insert([
-        {
-          email,
-          statut: 'echec',
-          adresse_ip: '', // You can add IP tracking if needed
-          date_creation: new Date().toISOString()
-        }
-      ])
+      try {
+        await supabase.from('tentatives_connexion').insert([
+          {
+            email,
+            statut: 'echec',
+            adresse_ip: '', // You can add IP tracking if needed
+            date_creation: new Date().toISOString(),
+            service: 'default' // Default service if not specified
+          }
+        ])
+      } catch (logError) {
+        console.error('Erreur lors de la journalisation de tentative échouée:', logError)
+      }
     } finally {
       setLoading(false)
     }
@@ -100,4 +130,4 @@ export default function LoginForm() {
       </button>
     </form>
   )
-} 
+}

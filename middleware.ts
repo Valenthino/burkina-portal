@@ -1,4 +1,4 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -33,7 +33,32 @@ const serviceRoutes: ServiceRoutes = {
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => {
+          const cookies = req.cookies.getAll()
+          const cookie = cookies.find((cookie) => cookie.name === name)
+          return cookie?.value
+        },
+        set: (name, value, options) => {
+          res.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+        },
+        remove: (name, options) => {
+          res.cookies.delete({
+            name,
+            ...options,
+          })
+        },
+      },
+    }
+  );
 
   const {
     data: { session },
@@ -52,8 +77,16 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Get the last authenticated service from cookies
-  const lastAuthService = req.cookies.get('last_auth_service')?.value;
+  // Get the last authenticated service from cookies - simplified approach
+  let lastAuthService;
+  try {
+    // Use the Next.js cookies API directly
+    const cookie = req.cookies.get('last_auth_service');
+    lastAuthService = cookie?.value;
+  } catch (error) {
+    console.error('Error accessing cookies:', error);
+    lastAuthService = undefined;
+  }
 
   // If accessing a protected route
   if (requiresAuth) {
@@ -78,23 +111,46 @@ export async function middleware(req: NextRequest) {
     const requestedRedirect = req.nextUrl.searchParams.get('redirect');
     
     // If authenticated but for a different service, sign out
-    if (session && lastAuthService && lastAuthService !== service) {
-      await supabase.auth.signOut();
-      const response = NextResponse.next();
-      response.cookies.delete('last_auth_service');
-      return response;
+    if (session && lastAuthService !== undefined && lastAuthService !== service) {
+      try {
+        await supabase.auth.signOut();
+        const response = NextResponse.next();
+        response.cookies.delete('last_auth_service');
+        return response;
+      } catch (error) {
+        console.error('Erreur lors de la déconnexion dans le middleware:', error);
+        // Continue to auth page even if sign out fails
+      }
     }
 
     // If authenticated for the same service, redirect to the requested page or dashboard
-    if (session && lastAuthService === service) {
-      const redirectTo = requestedRedirect || serviceRoutes[service].dashboardPath;
-      return NextResponse.redirect(new URL(redirectTo, req.url));
+    if (session) {
+      try {
+        const serviceConfig = serviceRoutes[service as keyof typeof serviceRoutes];
+        if (!serviceConfig) {
+          return NextResponse.redirect(new URL('/', req.url));
+        }
+        const redirectTo = requestedRedirect || serviceConfig.dashboardPath;
+        const response = NextResponse.redirect(new URL(redirectTo, req.url));
+        response.cookies.set('last_auth_service', service, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          path: '/'
+        });
+        return response;
+      } catch (error) {
+        console.error('Erreur lors de la redirection dans le middleware:', error);
+        // Continue to auth page if redirection fails
+      }
     }
   }
 
   // Set the last authenticated service cookie after successful authentication
   if (session && targetService) {
-    res.cookies.set('last_auth_service', targetService, {
+    res.cookies.set({
+      name: 'last_auth_service',
+      value: targetService,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -113,4 +169,4 @@ export const config = {
     '/services/citoyens/passeport/:path*',
     '/admin/:path*',
   ],
-}; 
+};

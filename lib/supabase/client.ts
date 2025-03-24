@@ -17,7 +17,7 @@ export const createClient = () => {
         getUser: () => Promise.resolve({ data: { user: null }, error: null }),
         signOut: () => Promise.resolve({ error: null }),
         signInWithPassword: () => Promise.resolve({ data: { user: null }, error: null }),
-        signUp: () => Promise.resolve({ data: { user: null }, error: null }),
+        signUp: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
         signInWithOtp: () => Promise.resolve({ data: { user: null }, error: null }),
         verifyOtp: () => Promise.resolve({ data: { user: null }, error: null }),
         signInWithOAuth: () => Promise.resolve({ data: { user: null }, error: null }),
@@ -48,4 +48,4 @@ export const createClient = () => {
   )
 
   return client
-} 
+}

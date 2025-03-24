@@ -3,10 +3,12 @@ import { createClient } from '@/lib/supabase/server';
 import QRCode from 'qrcode';
 import { createCanvas } from 'canvas';
 import JsBarcode from 'jsbarcode';
+import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const formData = await request.json();
 
     // Generate QR code
@@ -85,4 +87,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-} 
+}

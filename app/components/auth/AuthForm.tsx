@@ -3,10 +3,10 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { FaGoogle, FaFacebook } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createClient } from '@/lib/supabase/client';
+import { FaGoogle, FaFacebook } from 'react-icons/fa';
 
 interface AuthFormProps {
   service: string;
@@ -51,7 +51,7 @@ export default function AuthForm({ service, title, description, redirectTo }: Au
       // Always sign out first to ensure clean session
       await supabase.auth.signOut();
       
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -59,56 +59,57 @@ export default function AuthForm({ service, title, description, redirectTo }: Au
       if (error) throw error;
 
       // Log the authentication for the specific service
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('journaux_securite').insert([{
-          utilisateur_id: user.id,
-          action: 'connexion',
-          description: `Connexion réussie - Service: ${service}`,
-          adresse_ip: '',
-          user_agent: navigator.userAgent,
-          service: service
-        }]);
+      if (data.user) {
+        try {
+          await supabase.from('journaux_securite').insert([{
+            utilisateur_id: data.user.id,
+            action: 'connexion',
+            description: `Connexion réussie - Service: ${service}`,
+            adresse_ip: '',
+            user_agent: navigator.userAgent,
+            service: service
+          }]);
 
-        // Set the service cookie
-        document.cookie = `last_auth_service=${service}; path=/; secure; samesite=lax`;
+          // Set the service cookie via response headers
+          const response = await fetch('/api/auth/set-service-cookie', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ service }),
+          });
+
+          if (!response.ok) {
+            console.error('Erreur lors de la définition du cookie de service:', await response.text());
+          }
+        } catch (logError) {
+          console.error('Erreur lors de la journalisation de connexion:', logError);
+          // Continue with redirection even if logging fails
+        }
       }
 
       // Use the provided redirect URL or fall back to the service dashboard
       router.push(redirectTo);
     } catch (error: any) {
+      console.error('Erreur de connexion:', error);
       setError(error.message);
-      await supabase.from('tentatives_connexion').insert([{
-        email,
-        statut: 'echec',
-        adresse_ip: '',
-        date_creation: new Date().toISOString(),
-        service: service
-      }]);
+      try {
+        await supabase.from('tentatives_connexion').insert([{
+          email,
+          statut: 'echec',
+          adresse_ip: '',
+          date_creation: new Date().toISOString(),
+          service: service
+        }]);
+      } catch (logError) {
+        console.error('Erreur lors de la journalisation de tentative échouée:', logError);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSocialSignIn = async (provider: 'google' | 'facebook') => {
-    try {
-      // Always sign out first to ensure clean session
-      await supabase.auth.signOut();
-      
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback?service=${service}&redirect=${redirectTo}`,
-          queryParams: {
-            service: service // Pass service to maintain context after OAuth
-          }
-        },
-      });
-      if (error) throw error;
-    } catch (error: any) {
-      setError(error.message);
-    }
-  };
+  // OAuth authentication methods have been removed as they are not currently functional
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -474,4 +475,4 @@ export default function AuthForm({ service, title, description, redirectTo }: Au
       </Tabs>
     </div>
   );
-} 
+}

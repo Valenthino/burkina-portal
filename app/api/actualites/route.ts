@@ -1,9 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 
 export async function GET(request: Request) {
     try {
-        const supabase = createClient()
+        const cookieStore = cookies()
+        const supabase = createClient(cookieStore)
         
         const { data: actualites, error } = await supabase
             .from('actualites')
@@ -20,4 +22,4 @@ export async function GET(request: Request) {
         console.error('Error fetching actualites:', error)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
-} 
+}

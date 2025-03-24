@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Breadcrumb from '@/app/components/Breadcrumb';
+import FeedbackSection from '@/app/components/FeedbackSection';
 
 const breadcrumbItems = [
   { label: 'Accueil', href: '/' },
@@ -182,21 +183,8 @@ export default function CitoyensPage() {
         </div>
 
         {/* Feedback Section */}
-        <div className="bg-gray-50 p-6 rounded-lg mt-12">
-          <h2 className="text-2xl font-semibold mb-4">Cette page vous a-t-elle été utile ?</h2>
-          <div className="flex gap-4">
-            <button className="bg-blue-600 text-white px-8 py-2 rounded hover:bg-blue-700">
-              Oui
-            </button>
-            <button className="bg-gray-600 text-white px-8 py-2 rounded hover:bg-gray-700">
-              Non
-            </button>
-          </div>
-          <p className="text-sm text-gray-500 mt-4">
-            Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}
-          </p>
-        </div>
+        <FeedbackSection />
       </div>
     </main>
   );
-} 
+}

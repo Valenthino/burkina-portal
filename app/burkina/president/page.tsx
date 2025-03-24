@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import FeedbackSection from '@/app/components/FeedbackSection';
 
 const speeches = [
   {
@@ -139,18 +140,10 @@ export default function PresidentPage() {
       </section>
 
       {/* Feedback Section */}
-      <div className="mt-12 bg-gray-50 rounded-lg p-6">
-        <h2 className="text-xl font-bold mb-4">Votre avis nous intéresse</h2>
-        <p className="mb-4">Cette page vous a-t-elle été utile ?</p>
-        <div className="flex space-x-4">
-          <button className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600">
-            Oui
-          </button>
-          <button className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600">
-            Non
-          </button>
-        </div>
-      </div>
+      <FeedbackSection 
+        variant="compact" 
+        className="mt-12" 
+      />
     </div>
   );
-} 
+}

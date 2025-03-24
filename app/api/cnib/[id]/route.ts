@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createClient();
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
     const { data, error } = await supabase
       .from('cnib_applications')
       .select('*')
@@ -49,4 +51,4 @@ export async function GET(
       { status: 500 }
     );
   }
-} 
+}

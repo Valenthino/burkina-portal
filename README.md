@@ -48,6 +48,11 @@ Modern, accessible government portal built with Next.js 14, focusing on performa
 5. **Responsive Design**
 6. **Performance Optimization**
 7. **Security Features**
+8. **Each Service has its own dashboard**
+9. **Each Service has its own API**
+10. **Each Service has its own Tests**
+11. **Each Service has its own Documentation**
+
 
 ## Système d'Administration
 
